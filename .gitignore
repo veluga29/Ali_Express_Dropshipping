@@ -1,0 +1,6 @@
+# Ignore Files
+*.pyc
+*~
+__pycache__
+/static
+ali_bash
