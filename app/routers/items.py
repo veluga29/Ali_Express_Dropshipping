@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from ..database import crud, schemas, models
 from ..dependencies import get_db
-from ..zapiex import zapiex
+from ..zapiex.zapiex import zapiex_apis
 
 router = APIRouter(
     tags=["items"]
@@ -16,7 +16,7 @@ router = APIRouter(
 def create_item_for_user(
     user_id: int, product_id: str, db: Session = Depends(get_db)
 ):
-    product_info = zapiex.get_product(product_id)
+    product_info = zapiex_apis.get_product(product_id)
     title = product_info['data']['title'].split()[0:2]
     description = product_info['data']['htmlDescription'].split('<strong>●')[1].split('</strong>')[0]
     item = models.Item(title=title, description=description, owner_id=user_id)

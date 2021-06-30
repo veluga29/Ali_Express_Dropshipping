@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 
 from .database import models
 from .database.database import engine
@@ -25,3 +26,7 @@ app = create_app()
 @app.get("/")
 async def root():
     return {"message": "Ali express dropshipping"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

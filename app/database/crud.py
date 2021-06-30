@@ -36,6 +36,27 @@ def create_user_item(db: Session, db_item: schemas.ItemCreate):
     db.refresh(db_item)
     return db_item
 
+# search functions
+def create_search_text(db: Session, db_item):
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+
+def get_search_text(db: Session, text: str):
+    return db.query(models.SearchText).filter(models.SearchText.text == text).first()
+
+
+def create_searched_products(db: Session, db_item):
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+
+def get_searched_products(db: Session, db_text_id):
+    return db.query(models.ProductLists).filter(models.ProductLists.search_text_id == db_text_id).all()
 
 # security
 def fake_hash_password(password: str):
