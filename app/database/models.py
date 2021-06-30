@@ -29,26 +29,25 @@ class Item(Base):
 
 # HW
 class SearchText(Base):
-    __tablename__ = "search_text"
+    __tablename__ = "search_texts"
     
     id = Column(Integer, primary_key=True, index=True)
     text = Column(String, index=True)
+    page = Column(Integer, default=1)
     
-    product_lists = relationship("ProductLists", back_populates="search_text")
+    product_list = relationship("ProductList", back_populates="search_text")
 
 
-class ProductLists(Base):
-    __tablename__ = "products"
+class ProductList(Base):
+    __tablename__ = "product_lists"
     
     id = Column(Integer, primary_key=True, index=True)
     # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 어떨까 생각했습니다.
     product = Column(JSON, index=True)
-    search_text_id = Column(Integer, ForeignKey("search_text.id"))
-    
-    search_text = relationship("SearchText", back_populates="product_lists")
+    search_text_id = Column(Integer, ForeignKey("search_text.id"), unique=True)
     
     
-class ProductDetails(Base):
+class ProductDetail(Base):
     __tablename__ = "product_details"
     
     id = Column(Integer, primary_key=True, index=True)

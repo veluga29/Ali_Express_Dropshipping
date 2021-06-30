@@ -38,18 +38,20 @@ def create_user_item(db: Session, db_item: schemas.ItemCreate):
 
 
 # search functions
-def create_search_text(db: Session, db_item: schemas.SearchTextCreate):
-    db.add(db_item)
+def create_search_text(db: Session, text: str, page: int):
+    search_text = models.SearchText(text=text, page=int)
+    db.add(search_text)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(search_text)
+    return search_text
 
 
-def get_search_text(db: Session, text: str):
-    return db.query(models.SearchText).filter(models.SearchText.text == text).first()
+def get_search_text_and_page(db: Session, text: str, page: int):
+    return db.query(models.SearchText).filter(models.SearchText.text == text, models.SearchText.page == page).first()
+    
 
-
-def create_searched_products(db: Session, db_item):  # schema 적용 필요
+def create_searched_products(db: Session, product_list: dict, search_text_id: int):  # schema 적용 필요
+    db_item =models.ProductList(information=product_list, search_text_id=search_text_id)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
@@ -57,7 +59,7 @@ def create_searched_products(db: Session, db_item):  # schema 적용 필요
 
 
 def get_searched_products(db: Session, db_text_id):
-    return db.query(models.ProductLists).filter(models.ProductLists.search_text_id == db_text_id).all()
+    return db.query(models.ProductList).filter(models.ProductList.search_text_id == db_text_id).all()
 
 
 # product details

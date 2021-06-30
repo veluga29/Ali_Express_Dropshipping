@@ -46,16 +46,16 @@ class SearchTextCreate(SearchTextBase):
     pass
 
 
-class ProductListsBase(BaseModel):
+class ProductListBase(BaseModel):
     # product: Json
     pass
     
 
-class ProductListsCreate(ProductListsBase):
+class ProductListCreate(ProductListBase):
     pass
     
 
-class ProductLists(ProductListsBase):
+class ProductList(ProductListBase):
     id: int
     search_text_id: int
     

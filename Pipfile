@@ -10,6 +10,8 @@ requests = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
 python-multipart = "*"
+alembic = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
