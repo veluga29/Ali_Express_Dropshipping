@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -39,8 +39,8 @@ class ProductLists(Base):
     __tablename__ = "products"
     
     id = Column(Integer, primary_key=True, index=True)
-    # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 합리적이라고 판단했습니다.
-    product = Column(JSONB, index=True)  # JSON과 JSONB에 대하여 조사할 것
+    # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 어떨까 생각했습니다.
+    product = Column(JSON, index=True)
     search_text_id = Column(Integer, ForeignKey("search_text.id"))
     
     search_text = relationship("SearchText", back_populates="product_lists")

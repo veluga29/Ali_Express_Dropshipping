@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Json
 
 
 class ItemBase(BaseModel):
@@ -37,6 +37,33 @@ class User(UserBase):
         orm_mode = True
 
 
+class SearchTextBase(BaseModel):
+    text: str
+    
+
+class SearchTextCreate(SearchTextBase):
+    pass
+
+
+class ProductListsBase(BaseModel):
+    # product: Json
+    pass
+    
+
+class ProductListsCreate(ProductListsBase):
+    pass
+    
+
+class ProductLists(ProductListsBase):
+    id: int
+    search_text_id: int
+    
+    class Config:
+        orm_mode = True
+
+
 # security
 class UserInDB(User):
     hashed_password: str
+    
+
