@@ -26,6 +26,7 @@ class Item(Base):
 
     owner = relationship("User", back_populates="items")
 
+
 # HW
 class SearchText(Base):
     __tablename__ = "search_text"
@@ -34,6 +35,7 @@ class SearchText(Base):
     text = Column(String, index=True)
     
     product_lists = relationship("ProductLists", back_populates="search_text")
+
 
 class ProductLists(Base):
     __tablename__ = "products"
@@ -45,3 +47,42 @@ class ProductLists(Base):
     
     search_text = relationship("SearchText", back_populates="product_lists")
     
+    
+class ProductDetails(Base):
+    __tablename__ = "product_details"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    productUrl = Column(String, index=True)
+    productId = Column(String, index=True)
+    statusId = Column(String, index=True)
+    status = Column(String, index=True)
+    currency = Column(String, index=True)
+    locale = Column(String, index=True)
+    shipTo = Column(String, index=True)
+    title = Column(String, index=True)
+    totalStock = Column(Integer, index=True)
+    totalOrders = Column(Integer, index=True)
+    wishlistCount = Column(Integer, index=True)
+    unitName = Column(String, index=True)
+    unitNamePlural = Column(String, index=True)
+    unitsPerProduct = Column(Integer, index=True)
+    hasPurchaseLimit = Column(Boolean, index=True)
+    maxPurchaseLimit = Column(Integer, index=True)
+    processingTimeInDays = Column(Integer, index=True)
+    productImages = Column(String, index=True)  # list
+    productCategory = Column(String, index=True)  # dict
+    seller = Column(String, index=True)  # dict
+    sellerDetails = Column(String, index=True)  # dict
+    hasSinglePrice = Column(Boolean, index=True)
+    price = Column(String, index=True)  # dict
+    hasAttributes = Column(Boolean, index=True)
+    attributes = Column(String, index=True)  # list
+    hasReviewsRatings = Column(Boolean, index=True)
+    reviewsRatings = Column(String, index=True)  # dict
+    hasProperties = Column(Boolean, index=True)
+    properties = Column(String, index=True)  # list
+    hasVariations = Column(Boolean, index=True)
+    variations = Column(String, index=True)  # list
+    shipping = Column(String, index=True)  # dict
+    htmlDescription = Column(String, index=True)
+    priceSummary = Column(Integer, index=True)

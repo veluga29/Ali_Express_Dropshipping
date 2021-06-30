@@ -12,7 +12,7 @@ router = APIRouter(
     tags=["search"]
 )
 
-@router.get("/search/", response_model=List[schemas.ProductLists])
+@router.post("/search/", response_model=List[schemas.ProductLists])
 async def create_search_items(text: str, db: Session = Depends(get_db)):
     db_text = crud.get_search_text(db, text=text)
     # 이미 검색한 기록이 있으면 db에서 꺼내 보여줌

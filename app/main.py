@@ -3,7 +3,7 @@ import uvicorn
 
 from .database import models
 from .database.database import engine
-from .routers import items, users, search, security
+from .routers import details, items, users, search, security
 
 
 def create_app():
@@ -13,6 +13,7 @@ def create_app():
     models.Base.metadata.create_all(bind=engine)
     
     # 라우터 정의
+    app.include_router(details.router)
     app.include_router(items.router)
     app.include_router(users.router)
     app.include_router(search.router)

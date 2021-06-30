@@ -60,6 +60,14 @@ def get_searched_products(db: Session, db_text_id):
     return db.query(models.ProductLists).filter(models.ProductLists.search_text_id == db_text_id).all()
 
 
+# product details
+def create_product_details(db: Session, db_item):  # schema 적용 필요
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+
+
 # security
 def fake_hash_password(password: str):
     return "fakehashed" + password

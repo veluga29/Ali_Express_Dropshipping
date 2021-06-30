@@ -37,6 +37,7 @@ class User(UserBase):
         orm_mode = True
 
 
+# search products
 class SearchTextBase(BaseModel):
     text: str
     
@@ -60,6 +61,10 @@ class ProductLists(ProductListsBase):
     
     class Config:
         orm_mode = True
+
+
+# details
+
 
 
 # security
