@@ -35,7 +35,7 @@ class SearchText(Base):
     text = Column(String, index=True)
     page = Column(Integer, default=1)
     
-    product_list = relationship("ProductList", back_populates="search_text")
+    product_list = relationship("ProductList", backref="search_text")
 
 
 class ProductList(Base):
@@ -44,7 +44,7 @@ class ProductList(Base):
     id = Column(Integer, primary_key=True, index=True)
     # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 어떨까 생각했습니다.
     product = Column(JSON, index=True)
-    search_text_id = Column(Integer, ForeignKey("search_text.id"), unique=True)
+    search_text_id = Column(Integer, ForeignKey('search_texts.id'))
     
     
 class ProductDetail(Base):

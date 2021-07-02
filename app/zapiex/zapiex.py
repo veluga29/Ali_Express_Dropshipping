@@ -1,6 +1,6 @@
 import requests
 import json
-from ..settting import API_KEY
+from ..settings import API_KEY
 
 # zapiex.py classify HW
 class ZapiexAPI:
