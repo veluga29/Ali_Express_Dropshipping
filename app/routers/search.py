@@ -20,7 +20,8 @@ router = APIRouter(
 3. Implementation steps should be modify
 '''
 
-@router.post("/search/", response_model=List[schemas.ProductList])
+@router.post("/search/", response_model=schemas.ProductList)
+# @router.post("/search/")
 async def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
     try:
         search_text = crud.get_search_text_and_page(db, text=text, page=page)
@@ -28,11 +29,12 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         if search_text:
             return search_text.product_list
         search_info = zapiex_apis.search_products(text, page)  # Zapiex API 호출
-        if search_info.status_code == 200:
+        if search_info["statusCode"] == 200:
             search_text = crud.create_search_text(db=db, text=text, page=page)  # search_text 테이블에 저장
-            product_list = search_info["data"]
-            return crud.create_searched_products(db=db, product_lists=product_list, search_text_id=search_text.id)
+            information = search_info["data"]
+            return crud.create_searched_products(db=db, information=information, search_text_id=search_text.id)
         else:
-            return HTTPException({"error_code": 1}, status_code=400)
+            raise HTTPException(detail={"error_code": 1}, status_code=400)
     except Exception as e:
-        return HTTPException({"error_code": 3}, status_code=400)
+        # raise HTTPException(detail=e, status_code=400)
+        print(e)

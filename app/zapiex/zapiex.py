@@ -25,9 +25,9 @@ class ZapiexAPI:
         response = requests.post(URL, headers=ZapiexAPI.headers, data=data)
         return response.json()
     
-    def search_products(self, text: str):
+    def search_products(self, text: str, page: int):
         URL = 'https://api.zapiex.com/v3/search'
-        data = {'text': text, 'shipTo': 'KR'}
+        data = {'text': text, 'shipTo': 'KR', 'page': page}
         response = requests.post(URL, headers=ZapiexAPI.headers, data=json.dumps(data))  # 왜 dump해야 오류 없을까요
         return response.json()
     

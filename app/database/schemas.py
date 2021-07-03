@@ -57,6 +57,7 @@ class ProductListCreate(ProductListBase):
 
 class ProductList(ProductListBase):
     id: int
+    information: dict
     search_text_id: int
     
     class Config:

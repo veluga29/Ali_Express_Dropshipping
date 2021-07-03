@@ -49,7 +49,7 @@ class ProductList(AbstractBase):
     __tablename__ = "product_lists"
     
     # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 어떨까 생각했습니다.
-    product = Column(JSON, nullable=True)
+    information = Column(JSON, nullable=True)
     search_text_id = Column(Integer, ForeignKey('search_texts.id'))
     search_text = relationship("SearchText", back_populates="product_list")
     
