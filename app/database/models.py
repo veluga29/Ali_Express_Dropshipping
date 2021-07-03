@@ -1,9 +1,17 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.dialects.postgresql import JSON
+import sqlalchemy as sa
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
 from .database import Base
 
+
+class AbstractBase(Base):
+    __abstract__ = True
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    create_dt = Column(postgresql.TIMESTAMP(timezone=True), server_default=sa.func.now())
+    update_dt = Column(postgresql.TIMESTAMP(timezone=True), onupdate=sa.func.now())
 
 class User(Base):
     __tablename__ = "users"
@@ -28,23 +36,22 @@ class Item(Base):
 
 
 # HW
-class SearchText(Base):
+class SearchText(AbstractBase):
     __tablename__ = "search_texts"
     
-    id = Column(Integer, primary_key=True, index=True)
     text = Column(String, index=True)
     page = Column(Integer, default=1)
     
-    product_list = relationship("ProductList", backref="search_text")
+    product_list = relationship("ProductList", back_populates="search_text")
 
 
-class ProductList(Base):
+class ProductList(AbstractBase):
     __tablename__ = "product_lists"
     
-    id = Column(Integer, primary_key=True, index=True)
     # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 어떨까 생각했습니다.
-    product = Column(JSON, index=True)
+    product = Column(JSON, nullable=True)
     search_text_id = Column(Integer, ForeignKey('search_texts.id'))
+    search_text = relationship("SearchText", back_populates="product_list")
     
     
 class ProductDetail(Base):
