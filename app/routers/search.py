@@ -19,13 +19,12 @@ router = APIRouter(tags=["search"])
 
 
 @router.post("/search/", response_model=schemas.ProductList)
-# @router.post("/search/")
 async def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
     try:
         search_text = crud.get_search_text_and_page(db, text=text, page=page)
         # 이미 검색한 기록이 있으면 db에서 꺼내 보여줌
         if search_text:
-            return search_text.product_list
+            return search_text.product_list[0]
         search_info = zapiex_apis.search_products(text, page)  # Zapiex API 호출
         if search_info["statusCode"] == 200:
             search_text = crud.create_search_text(

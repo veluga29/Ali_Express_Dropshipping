@@ -21,20 +21,18 @@ def get_search_text_and_page(db: Session, text: str, page: int):
     )
 
 
-def create_searched_products(db: Session, information: dict, search_text_id: int):  # schema 적용 필요
+def create_searched_products(db: Session, information: dict, search_text_id: int):
     db_item = models.ProductList(information=information, search_text_id=search_text_id)
-    # print(db_item.information)
-    # print(db_item.search_text_id)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
     return db_item
 
 
-def get_searched_products(db: Session, db_text_id):
-    return (
-        db.query(models.ProductList).filter(models.ProductList.search_text_id == db_text_id).all()
-    )
+# def get_searched_products(db: Session, db_text_id):
+#     return (
+#         db.query(models.ProductList).filter(models.ProductList.search_text_id == db_text_id).all()
+#     )
 
 
 # product details

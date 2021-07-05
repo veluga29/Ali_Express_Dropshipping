@@ -1,27 +1,10 @@
 from typing import List, Optional
 
-from pydantic import BaseModel, Json
+from pydantic import BaseModel
 
 
 # search products
-class SearchTextBase(BaseModel):
-    text: str
-
-
-class SearchTextCreate(SearchTextBase):
-    pass
-
-
-class ProductListBase(BaseModel):
-    # product: Json
-    pass
-
-
-class ProductListCreate(ProductListBase):
-    pass
-
-
-class ProductList(ProductListBase):
+class ProductList(BaseModel):
     id: int
     information: dict
     search_text_id: int
