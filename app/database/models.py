@@ -8,55 +8,34 @@ from .database import Base
 
 class AbstractBase(Base):
     __abstract__ = True
-    
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     create_dt = Column(postgresql.TIMESTAMP(timezone=True), server_default=sa.func.now())
     update_dt = Column(postgresql.TIMESTAMP(timezone=True), onupdate=sa.func.now())
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-
-    items = relationship("Item", back_populates="owner")
-
-
-class Item(Base):
-    __tablename__ = "items"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-
-    owner = relationship("User", back_populates="items")
 
 
 # HW
 class SearchText(AbstractBase):
     __tablename__ = "search_texts"
-    
+
     text = Column(String, index=True)
     page = Column(Integer, default=1)
-    
+
     product_list = relationship("ProductList", back_populates="search_text")
 
 
 class ProductList(AbstractBase):
     __tablename__ = "product_lists"
-    
+
     # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 어떨까 생각했습니다.
     information = Column(JSON, nullable=True)
-    search_text_id = Column(Integer, ForeignKey('search_texts.id'))
+    search_text_id = Column(Integer, ForeignKey("search_texts.id"))
     search_text = relationship("SearchText", back_populates="product_list")
-    
-    
+
+
 class ProductDetail(Base):
     __tablename__ = "product_details"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     productUrl = Column(String, index=True)
     productId = Column(String, index=True)

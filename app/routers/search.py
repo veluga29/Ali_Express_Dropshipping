@@ -1,24 +1,22 @@
-from re import search
 from typing import List
 
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
-import json
 
 from ..database import crud, schemas, models
 from ..dependencies import get_db
 from ..zapiex.zapiex import zapiex_apis
 
-router = APIRouter(
-    tags=["search"]
-)
+router = APIRouter(tags=["search"])
 
-'''
-1. Store SearchText <-> ProductList one-to-one relationship
-2. DB query grammar & DB create grammar modification
-3. Implementation steps should be modify
-'''
+""" HW July 3rd
+1. When SearchText is stored but ProductList isn't, return [] -> Please making sure both SearchText and ProductList are stored 
+2. Search API analysis
+3. crud, model, router setting for ProductDetail API
+4. Schemas setting for search, ProductDetail, SearchText
+"""
+
 
 @router.post("/search/", response_model=schemas.ProductList)
 # @router.post("/search/")
@@ -30,9 +28,13 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
             return search_text.product_list
         search_info = zapiex_apis.search_products(text, page)  # Zapiex API 호출
         if search_info["statusCode"] == 200:
-            search_text = crud.create_search_text(db=db, text=text, page=page)  # search_text 테이블에 저장
+            search_text = crud.create_search_text(
+                db=db, text=text, page=page
+            )  # search_text 테이블에 저장
             information = search_info["data"]
-            return crud.create_searched_products(db=db, information=information, search_text_id=search_text.id)
+            return crud.create_searched_products(
+                db=db, information=information, search_text_id=search_text.id
+            )
         else:
             raise HTTPException(detail={"error_code": 1}, status_code=400)
     except Exception as e:
