@@ -36,8 +36,15 @@ def create_searched_products(db: Session, information: dict, search_text_id: int
 
 
 # product details
-def create_product_details(db: Session, db_item):  # schema 적용 필요
+def create_product_details(db: Session, information: dict):
+    db_item = models.ProductDetail(**information)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
     return db_item
+
+
+def get_product_detail(db: Session, product_id: str):
+    return (
+        db.query(models.ProductDetail).filter(models.ProductDetail.productId == product_id).first()
+    )

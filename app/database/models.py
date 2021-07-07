@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON, ARRAY
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
 
@@ -33,10 +33,9 @@ class ProductList(AbstractBase):
     search_text = relationship("SearchText", back_populates="product_list")
 
 
-class ProductDetail(Base):
+class ProductDetail(AbstractBase):
     __tablename__ = "product_details"
 
-    id = Column(Integer, primary_key=True, index=True)
     productUrl = Column(String, index=True)
     productId = Column(String, index=True)
     statusId = Column(String, index=True)
@@ -45,29 +44,28 @@ class ProductDetail(Base):
     locale = Column(String, index=True)
     shipTo = Column(String, index=True)
     title = Column(String, index=True)
-    totalStock = Column(Integer, index=True)
-    totalOrders = Column(Integer, index=True)
-    wishlistCount = Column(Integer, index=True)
-    unitName = Column(String, index=True)
-    unitNamePlural = Column(String, index=True)
-    unitsPerProduct = Column(Integer, index=True)
-    hasPurchaseLimit = Column(Boolean, index=True)
-    maxPurchaseLimit = Column(Integer, index=True)
-    processingTimeInDays = Column(Integer, index=True)
-    productImages = Column(String, index=True)  # list
-    productCategory = Column(String, index=True)  # dict
-    seller = Column(String, index=True)  # dict
-    sellerDetails = Column(String, index=True)  # dict
+    totalStock = Column(Integer)
+    totalOrders = Column(Integer)
+    wishlistCount = Column(Integer)
+    unitName = Column(String)
+    unitNamePlural = Column(String)
+    unitsPerProduct = Column(Integer)
+    hasPurchaseLimit = Column(Boolean)
+    maxPurchaseLimit = Column(Integer)
+    processingTimeInDays = Column(Integer)
+    productImages = Column(ARRAY(String), index=True)  # list
+    productCategory = Column(JSON, index=True)  # dict
+    seller = Column(JSON, index=True)  # dict
+    sellerDetails = Column(JSON, index=True)  # dict
     hasSinglePrice = Column(Boolean, index=True)
-    price = Column(String, index=True)  # dict
+    priceSummary = Column(JSON, index=True)  # dict, docs와 변수명이 다름
     hasAttributes = Column(Boolean, index=True)
-    attributes = Column(String, index=True)  # list
+    attributes = Column(ARRAY(JSON), index=True)  # list
     hasReviewsRatings = Column(Boolean, index=True)
-    reviewsRatings = Column(String, index=True)  # dict
-    hasProperties = Column(Boolean, index=True)
-    properties = Column(String, index=True)  # list
-    hasVariations = Column(Boolean, index=True)
-    variations = Column(String, index=True)  # list
-    shipping = Column(String, index=True)  # dict
-    htmlDescription = Column(String, index=True)
-    priceSummary = Column(Integer, index=True)
+    reviewsRatings = Column(JSON, index=True)  # dict
+    hasProperties = Column(Boolean)
+    properties = Column(ARRAY(JSON))  # list
+    hasVariations = Column(Boolean)
+    variations = Column(ARRAY(JSON))  # list
+    shipping = Column(JSON)  # dict
+    htmlDescription = Column(String)
