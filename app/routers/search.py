@@ -35,7 +35,8 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
                 db=db, information=information, search_text_id=search_text.id
             )
         else:
-            raise HTTPException(detail={"error_code": 1}, status_code=400)
-    except Exception as e:
+            raise HTTPException(status_code=400, detail={"error_code": 1})
+    except Exception:
         # raise HTTPException(detail=e, status_code=400)
-        print(e)
+        # print(e)
+        raise
