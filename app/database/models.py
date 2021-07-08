@@ -36,36 +36,36 @@ class ProductList(AbstractBase):
 class ProductDetail(AbstractBase):
     __tablename__ = "product_details"
 
-    productUrl = Column(String, index=True)
-    productId = Column(String, index=True)
-    statusId = Column(String, index=True)
-    status = Column(String, index=True)
+    productUrl = Column("product_url", String)
+    productId = Column("product_id", String, index=True)
+    statusId = Column("status_id", String)
+    status = Column(String)
     currency = Column(String, index=True)
-    locale = Column(String, index=True)
-    shipTo = Column(String, index=True)
-    title = Column(String, index=True)
-    totalStock = Column(Integer)
-    totalOrders = Column(Integer)
-    wishlistCount = Column(Integer)
-    unitName = Column(String)
-    unitNamePlural = Column(String)
-    unitsPerProduct = Column(Integer)
-    hasPurchaseLimit = Column(Boolean)
-    maxPurchaseLimit = Column(Integer)
-    processingTimeInDays = Column(Integer)
-    productImages = Column(ARRAY(String), index=True)  # list
-    productCategory = Column(JSON, index=True)  # dict
-    seller = Column(JSON, index=True)  # dict
-    sellerDetails = Column(JSON, index=True)  # dict
-    hasSinglePrice = Column(Boolean, index=True)
-    priceSummary = Column(JSON, index=True)  # dict, docs와 변수명이 다름
-    hasAttributes = Column(Boolean, index=True)
-    attributes = Column(ARRAY(JSON), index=True)  # list
-    hasReviewsRatings = Column(Boolean, index=True)
-    reviewsRatings = Column(JSON, index=True)  # dict
-    hasProperties = Column(Boolean)
-    properties = Column(ARRAY(JSON))  # list
-    hasVariations = Column(Boolean)
-    variations = Column(ARRAY(JSON))  # list
+    locale = Column(String)
+    shipTo = Column("ship_to", String, index=True)
+    title = Column(String)
+    totalStock = Column("total_stock", Integer)
+    totalOrders = Column("total_orders", Integer)
+    wishlistCount = Column("wishlist_count", Integer)
+    unitName = Column("unit_name", String)
+    unitNamePlural = Column("unit_name_plural", String)
+    unitsPerProduct = Column("units_per_product", Integer)
+    hasPurchaseLimit = Column("has_purchase_limit", Boolean, default=False)
+    maxPurchaseLimit = Column("max_purchase_limit", Integer)
+    processingTimeInDays = Column("processing_time_in_days", Integer)
+    productImages = Column("product_images", JSON)  # list
+    productCategory = Column("product_category", JSON)  # dict
+    seller = Column(JSON)  # dict
+    sellerDetails = Column("seller_details", JSON)  # dict
+    hasSinglePrice = Column("has_single_price", Boolean)
+    priceSummary = Column("price_summary", JSON)  # dict, docs와 변수명이 다름
+    hasAttributes = Column("has_attributes", Boolean)
+    attributes = Column(JSON)  # list
+    hasReviewsRatings = Column("has_reviews_ratings", Boolean)
+    reviewsRatings = Column("reviews_ratings", JSON)  # dict
+    hasProperties = Column("has_properties", Boolean)
+    properties = Column(JSON)  # list
+    hasVariations = Column("has_variations", Boolean)
+    variations = Column(JSON)  # list
     shipping = Column(JSON)  # dict
-    htmlDescription = Column(String)
+    htmlDescription = Column("html_description", String)
