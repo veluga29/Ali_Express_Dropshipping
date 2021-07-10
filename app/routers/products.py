@@ -25,18 +25,23 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
             return search_text.product_list[0]
         search_info = zapiex_apis.search_products(text, page)  # Zapiex API 호출
         if search_info["statusCode"] == 200:
-            search_text = crud.create_search_text(
-                db=db, text=text, page=page
-            )  # search_text 테이블에 저장
             information = search_info["data"]
-            return crud.create_searched_products(
-                db=db, information=information, search_text_id=search_text.id
+            return crud.create_search_text_with_product_list(
+                db=db, text=text, page=page, information=information
             )
+            # code before
+            # search_text = crud.create_search_text(
+            #     db=db, text=text, page=page
+            # )
+            # information = search_info["data"]
+            # return crud.create_searched_products(
+            #     db=db, information=information, search_text_id=search_text.id
+            # )
         else:
-            raise HTTPException(status_code=400, detail={"error_code": 1})
+            raise HTTPException(
+                status_code=search_info["statusCode"], detail=search_info["errorMessage"]
+            )
     except Exception:
-        # raise HTTPException(detail=e, status_code=400)
-        # print(e)
         raise
 
 

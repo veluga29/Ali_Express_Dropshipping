@@ -5,12 +5,14 @@ from . import models, schemas
 
 
 # search functions
-def create_search_text(db: Session, text: str, page: int):
-    search_text = models.SearchText(text=text, page=page)
-    db.add(search_text)
+def create_search_text_with_product_list(db: Session, text: str, page: int, information: dict):
+    db_text = models.SearchText(text=text, page=page)
+    db.add(db_text)
+    db.flush()
+    db_product = models.ProductList(information=information, search_text_id=db_text.id)
+    db.add(db_product)
     db.commit()
-    db.refresh(search_text)
-    return search_text
+    return db_product
 
 
 def get_search_text_and_page(db: Session, text: str, page: int):
@@ -21,12 +23,18 @@ def get_search_text_and_page(db: Session, text: str, page: int):
     )
 
 
-def create_searched_products(db: Session, information: dict, search_text_id: int):
-    db_item = models.ProductList(information=information, search_text_id=search_text_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
+# def create_search_text(db: Session, text: str, page: int):
+#     search_text = models.SearchText(text=text, page=page)
+#     db.add(search_text)
+#     db.commit()
+#     return search_text
+
+
+# def create_searched_products(db: Session, information: dict, search_text_id: int):
+#     db_product = models.ProductList(information=information, search_text_id=search_text_id)
+#     db.add(db_product)
+#     db.commit()
+#     return db_product
 
 
 # def get_searched_products(db: Session, db_text_id):
