@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from app.database import models
 from app.database.database import engine
-from app.routers import details, search
+from app.routers import products
 
 
 def create_app():
@@ -13,8 +13,7 @@ def create_app():
     models.Base.metadata.create_all(bind=engine)
 
     # 라우터 정의
-    app.include_router(details.router)
-    app.include_router(search.router)
+    app.include_router(products.router)
 
     return app
 
