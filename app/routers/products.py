@@ -45,8 +45,7 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         raise
 
 
-# @router.post("/{product_id}", response_model=schemas.ProductDetail)
-@router.post("/{product_id}")
+@router.post("/{product_id}", response_model=schemas.ProductDetail)
 def create_details(product_id: str, db: Session = Depends(get_db)):
     try:
         db_detail = crud.get_product_detail(db, product_id=product_id)
@@ -55,11 +54,13 @@ def create_details(product_id: str, db: Session = Depends(get_db)):
         product_info = zapiex_apis.get_product(product_id)
         if product_info["statusCode"] == 200:
             information = product_info["data"]
-            if information["status"] == "active":
+            if information["status"] == "active":  # active 이외의 status에 대해 else로 return 하지 않아도 될까요?
                 return crud.create_product_details(db=db, information=information)
-            else:
-                return information
+        elif product_info["statusCode"] == 201:
+            # ex) '1230192314802471024333333333332433256164', 'asdf5625435', ';;;;'
+            return  # 이렇게 케이스를 나눈 상황에서 null 값 리턴해도 상관없을지 고민됩니다. (schema로 인해 리턴값이 제한됨)
         else:
+            # ex) '강아지'
             raise HTTPException(
                 status_code=product_info["statusCode"], detail=product_info["errorMessage"]
             )

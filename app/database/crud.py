@@ -48,7 +48,6 @@ def create_product_details(db: Session, information: dict):
     db_item = models.ProductDetail(**information)
     db.add(db_item)
     db.commit()
-    db.refresh(db_item)
     return db_item
 
 

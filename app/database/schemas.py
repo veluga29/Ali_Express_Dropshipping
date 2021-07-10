@@ -38,7 +38,7 @@ class ProductDetail(BaseModel):
     seller: dict
     sellerDetails: dict
     hasSinglePrice: bool
-    priceSummary: Optional[dict]
+    priceSummary: Optional[dict]  # optional하게 둬도 될지
     price: Optional[dict]
     hasAttributes: bool
     attributes: List[dict]
