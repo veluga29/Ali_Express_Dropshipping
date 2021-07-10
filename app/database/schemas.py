@@ -31,14 +31,15 @@ class ProductDetail(BaseModel):
     unitNamePlural: str
     unitsPerProduct: int
     hasPurchaseLimit: bool
-    maxPurchaseLimit: int
+    maxPurchaseLimit: Optional[int]
     processingTimeInDays: int
     productImages: List[str]
     productCategory: dict
     seller: dict
     sellerDetails: dict
     hasSinglePrice: bool
-    priceSummary: dict
+    priceSummary: Optional[dict]
+    price: Optional[dict]
     hasAttributes: bool
     attributes: List[dict]
     hasReviewsRatings: bool

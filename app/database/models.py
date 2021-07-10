@@ -58,6 +58,7 @@ class ProductDetail(AbstractBase):
     seller = Column(JSON)  # dict
     sellerDetails = Column("seller_details", JSON)  # dict
     hasSinglePrice = Column("has_single_price", Boolean)
+    price = Column(JSON)
     priceSummary = Column("price_summary", JSON)  # dict, docs와 변수명이 다름
     hasAttributes = Column("has_attributes", Boolean)
     attributes = Column(JSON)  # list
