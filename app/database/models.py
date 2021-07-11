@@ -11,7 +11,9 @@ class AbstractBase(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     create_dt = Column(postgresql.TIMESTAMP(timezone=True), server_default=sa.func.now())
-    update_dt = Column(postgresql.TIMESTAMP(timezone=True), onupdate=sa.func.now())
+    update_dt = Column(
+        postgresql.TIMESTAMP(timezone=True), default=sa.func.now(), onupdate=sa.func.now()
+    )
 
 
 # HW

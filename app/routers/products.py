@@ -6,6 +6,9 @@ from ..database import crud, schemas, models
 from ..dependencies import get_db
 from ..zapiex.zapiex import zapiex_apis
 
+from datetime import datetime, timedelta
+
+
 router = APIRouter(prefix="/products", tags=["products"])
 
 """ HW July 3rd
@@ -22,7 +25,18 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         search_text = crud.get_search_text_and_page(db, text=text, page=page)
         # 이미 검색한 기록이 있으면 db에서 꺼내 보여줌
         if search_text:
-            return search_text.product_list[0]
+            product_list = search_text.product_list[0]
+            if product_list.update_dt < datetime.utcnow() - timedelta(days=1):
+                search_info = zapiex_apis.search_products(text, page)
+                if search_info["statusCode"] == 200:
+                    information = search_info["data"]
+                    return crud.update_product_list(
+                        db,
+                        search_text_id=search_text.id,
+                        information=search_text.product_list[0].information,
+                    )
+            else:
+                return search_text.product_list[0]
         search_info = zapiex_apis.search_products(text, page)  # Zapiex API 호출
         if search_info["statusCode"] == 200:
             information = search_info["data"]
@@ -45,12 +59,36 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         raise
 
 
-@router.post("/{product_id}", response_model=schemas.ProductDetail)
+@router.post("/search", response_model=schemas.SearchText)
+def autocomplete_search_text(search: str, db: Session = Depends(get_db)):
+    try:
+        pass
+        # search text like % query to return list of search texts
+    except:
+        pass
+
+
+@router.get("/{product_id}", response_model=schemas.ProductDetail)
 def create_details(product_id: str, db: Session = Depends(get_db)):
     try:
         db_detail = crud.get_product_detail(db, product_id=product_id)
         if db_detail:
-            return db_detail
+            if db_detail.update_dt >= datetime.utcnow() - timedelta(days=1):
+                return db_detail
+            else:
+                product_info = zapiex_apis.get_product(product_id)
+                if product_info["statusCode"] == 200:
+                    information = product_info["data"]
+                    if (
+                        information["status"] == "active"
+                    ):  # active 이외의 status에 대해 else로 return 하지 않아도 될까요?
+                        return crud.update_product_details(db=db, information=information)
+                elif product_info["statusCode"] == 201:
+                    raise HTTPException(status_code=product_info["statusCode"])
+                else:
+                    raise HTTPException(
+                        status_code=product_info["statusCode"], detail=product_info["errorMessage"]
+                    )
         product_info = zapiex_apis.get_product(product_id)
         if product_info["statusCode"] == 200:
             information = product_info["data"]

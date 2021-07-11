@@ -3,6 +3,13 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
+class SearchText(BaseModel):
+    pass
+
+    class Config:
+        orm_mode = True
+
+
 # search products
 class ProductList(BaseModel):
     id: int

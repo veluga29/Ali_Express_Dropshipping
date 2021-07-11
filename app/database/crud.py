@@ -15,6 +15,14 @@ def create_search_text_with_product_list(db: Session, text: str, page: int, info
     return db_product
 
 
+def update_product_list(db: Session, search_text_id: int, information: dict):
+    product_list = db.query(models.ProductList).filter_by(search_text_id=search_text_id).first()
+    product_list.information = information
+    db.commit()
+    return product_list
+
+
+#
 def get_search_text_and_page(db: Session, text: str, page: int):
     return (
         db.query(models.SearchText)
@@ -49,6 +57,10 @@ def create_product_details(db: Session, information: dict):
     db.add(db_item)
     db.commit()
     return db_item
+
+
+def update_product_details(db: Session, information: dict):
+    pass
 
 
 def get_product_detail(db: Session, product_id: str):
