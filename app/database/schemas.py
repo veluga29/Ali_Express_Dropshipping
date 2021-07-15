@@ -4,7 +4,9 @@ from pydantic import BaseModel
 
 
 class SearchText(BaseModel):
-    pass
+    id: int
+    text: str
+    page: int
 
     class Config:
         orm_mode = True

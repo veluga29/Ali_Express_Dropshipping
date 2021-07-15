@@ -16,13 +16,12 @@ def create_search_text_with_product_list(db: Session, text: str, page: int, info
 
 
 def update_product_list(db: Session, search_text_id: int, information: dict):
-    product_list = db.query(models.ProductList).filter_by(search_text_id=search_text_id).first()
-    product_list.information = information
+    db_product_list = db.query(models.ProductList).filter_by(search_text_id=search_text_id).first()
+    db_product_list.information = information
     db.commit()
-    return product_list
+    return db_product_list
 
 
-#
 def get_search_text_and_page(db: Session, text: str, page: int):
     return (
         db.query(models.SearchText)
@@ -31,24 +30,9 @@ def get_search_text_and_page(db: Session, text: str, page: int):
     )
 
 
-# def create_search_text(db: Session, text: str, page: int):
-#     search_text = models.SearchText(text=text, page=page)
-#     db.add(search_text)
-#     db.commit()
-#     return search_text
-
-
-# def create_searched_products(db: Session, information: dict, search_text_id: int):
-#     db_product = models.ProductList(information=information, search_text_id=search_text_id)
-#     db.add(db_product)
-#     db.commit()
-#     return db_product
-
-
-# def get_searched_products(db: Session, db_text_id):
-#     return (
-#         db.query(models.ProductList).filter(models.ProductList.search_text_id == db_text_id).all()
-#     )
+# autocomplete search text
+def get_search_text_like(db: Session, text: str):
+    return db.query(models.SearchText).filter(models.SearchText.text.like(text + "%")).all()
 
 
 # product details
@@ -59,8 +43,17 @@ def create_product_details(db: Session, information: dict):
     return db_item
 
 
-def update_product_details(db: Session, information: dict):
-    pass
+def update_product_details(db: Session, product_id: str, information: dict):
+    # First way
+    # db_item = db.query(models.ProductDetail).filter_by(productId=product_id).update(information)
+    # db.commit()
+
+    # Second way
+    db_item = db.query(models.ProductDetail).filter_by(productId=product_id).first()
+    for key, value in information.items():
+        setattr(db_item, key, value)
+    db.commit()
+    return db_item
 
 
 def get_product_detail(db: Session, product_id: str):
