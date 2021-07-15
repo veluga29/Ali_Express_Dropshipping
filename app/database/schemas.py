@@ -4,10 +4,18 @@ from pydantic import BaseModel
 
 
 class SearchText(BaseModel):
-    id: int
     text: str
+
+
+class SearchTextInput(SearchText):
+    id: int
     page: int
 
+    class Config:
+        orm_mode = True
+
+
+class SearchTextOutput(SearchText):
     class Config:
         orm_mode = True
 

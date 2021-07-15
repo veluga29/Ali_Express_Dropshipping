@@ -1,4 +1,5 @@
 from fastapi import Depends, HTTPException, status
+from sqlalchemy import distinct
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -31,8 +32,15 @@ def get_search_text_and_page(db: Session, text: str, page: int):
 
 
 # autocomplete search text
-def get_search_text_like(db: Session, text: str):
-    return db.query(models.SearchText).filter(models.SearchText.text.like(text + "%")).all()
+def get_search_text_like(db: Session, text: str, page: int, limit: int):
+    return (
+        db.query(models.SearchText)
+        .filter(models.SearchText.text.like(f"%{text}%"))
+        .distinct(models.SearchText.text)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .all()
+    )
 
 
 # product details

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 
@@ -16,6 +16,15 @@ router = APIRouter(prefix="/products", tags=["products"])
 2. Search API analysis
 3. crud, model, router setting for ProductDetail API
 4. Schemas setting for search, ProductDetail, SearchText
+"""
+"""
+{
+    cur: "http://localhost:8000/products?text=cat&pg=1&count=20"
+    next: "http://localhost:8000/products?text=cat&pg=2&count=15"
+    data: [{
+        
+    }]
+}
 """
 
 
@@ -48,20 +57,25 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         raise
 
 
-@router.post("/search", response_model=List[schemas.SearchText])  # get method로 수정해야 할까요?
-def autocomplete_search_text(search: str, db: Session = Depends(get_db)):
+@router.get("/search", response_model=List[schemas.SearchTextOutput])  # get method로 수정해야 할까요?
+def autocomplete_search_text(
+    page: int,
+    limit: int,
+    search: str = Query(..., max_length=50, regex="[A-Za-z0-9]"),
+    db: Session = Depends(get_db),
+):
     try:
         # search text like % query to return list of search texts
-        for c in search:
-            if not (
-                (ord("A") <= ord(c) and ord(c) <= ord("Z"))
-                or (ord("a") <= ord(c) and ord(c) <= ord("z"))
-                or (ord("0") <= ord(c) and ord(c) <= ord("9"))
-            ):
-                raise Exception("유효한 검색어가 아닙니다.")
-        return crud.get_search_text_like(db, text=search)
-    except:
-        return []
+        # for c in search:
+        #     if not (
+        #         (ord("A") <= ord(c) and ord(c) <= ord("Z"))
+        #         or (ord("a") <= ord(c) and ord(c) <= ord("z"))
+        #         or (ord("0") <= ord(c) and ord(c) <= ord("9"))
+        #     ):
+        #         raise Exception("유효한 검색어가 아닙니다.")
+        return crud.get_search_text_like(db, text=search, page=page, limit=limit)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=e)
 
 
 @router.get("/{product_id}", response_model=schemas.ProductDetail)
