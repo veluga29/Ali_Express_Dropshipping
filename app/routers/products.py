@@ -28,7 +28,7 @@ router = APIRouter(prefix="/products", tags=["products"])
 """
 
 
-@router.post("/", response_model=schemas.ProductList)
+@router.get("/", response_model=schemas.ProductList)
 async def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
     try:
         search_text = crud.get_search_text_and_page(db, text=text, page=page)
