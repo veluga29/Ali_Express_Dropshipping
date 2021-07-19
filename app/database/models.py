@@ -72,3 +72,13 @@ class ProductDetail(AbstractBase):
     variations = Column(JSON)  # list
     shipping = Column(JSON)  # dict
     htmlDescription = Column("html_description", String)
+
+
+class User(AbstractBase):
+    __tablename__ = "users"
+
+    user_id = Column(String(100), index=True, unique=True)
+    email = Column(String(120), unique=True)
+    hashed_password = Column(String(200))
+    first_name = Column(String(30))
+    last_name = Column(String(30))

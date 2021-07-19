@@ -12,6 +12,8 @@ psycopg2 = "*"
 python-multipart = "*"
 alembic = "*"
 psycopg2-binary = "*"
+python-jose = {extras = ["cryptography"], version = "*"}
+passlib = {extras = ["bcrypt"], version = "*"}
 
 [dev-packages]
 pylint = "*"

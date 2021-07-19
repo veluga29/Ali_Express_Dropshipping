@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from app.database import models
 from app.database.database import engine
-from app.routers import products
+from app.routers import authentication, products
 
 
 def create_app():
@@ -14,6 +14,7 @@ def create_app():
 
     # 라우터 정의
     app.include_router(products.router)
+    app.include_router(authentication.router)
 
     return app
 

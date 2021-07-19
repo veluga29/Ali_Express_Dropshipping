@@ -30,7 +30,7 @@ class ProductList(BaseModel):
         orm_mode = True
 
 
-# details
+# product details
 class ProductDetail(BaseModel):
     id: int
     productUrl: str
@@ -70,3 +70,20 @@ class ProductDetail(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+# authentication
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class User(BaseModel):
+    user_id: str
+    email: str
+    first_name: str
+    last_name: str
+
+
+class UserInDB(User):
+    hashed_password: str
