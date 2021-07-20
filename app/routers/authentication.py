@@ -5,9 +5,12 @@ from sqlalchemy.orm import Session
 
 from ..database import crud, schemas
 from ..dependencies import get_db
-from ..settings import TOKEN_SECRET_KEY, TOKEN_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from ..settings import TOKEN_SECRET_KEY
 
 from datetime import timedelta
+
+TOKEN_ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 1
 
 
 router = APIRouter(prefix="/aaa", tags=["aaa"])
@@ -24,9 +27,9 @@ async def login_for_access_token(
             detail="Incorrect user_id or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
+    access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = crud.create_access_token(
-        data={"sub": user.user_id},
+        data={"sub": user.user_id, "email": user.email},
         token_secret_key=TOKEN_SECRET_KEY,
         token_algorithm=TOKEN_ALGORITHM,
         expires_delta=access_token_expires,

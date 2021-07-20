@@ -8,6 +8,7 @@ from ..zapiex.zapiex import zapiex_apis
 
 from datetime import datetime, timedelta
 from typing import List
+from fastapi_pagination import Page, add_pagination, paginate
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -57,10 +58,8 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         raise
 
 
-@router.get("/search", response_model=List[schemas.SearchTextOutput])  # get method로 수정해야 할까요?
+@router.get("/search", response_model=Page[schemas.SearchTextOutput])  # get method로 수정해야 할까요?
 def autocomplete_search_text(
-    page: int,
-    limit: int,
     search: str = Query(..., max_length=50, regex="[A-Za-z0-9]"),
     db: Session = Depends(get_db),
 ):
@@ -73,7 +72,7 @@ def autocomplete_search_text(
         #         or (ord("0") <= ord(c) and ord(c) <= ord("9"))
         #     ):
         #         raise Exception("유효한 검색어가 아닙니다.")
-        return crud.get_search_text_like(db, text=search, page=page, limit=limit)
+        return crud.get_search_text_like(db, text=search)
     except Exception as e:
         raise HTTPException(status_code=400, detail=e)
 

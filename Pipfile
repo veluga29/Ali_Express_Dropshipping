@@ -14,6 +14,7 @@ alembic = "*"
 psycopg2-binary = "*"
 python-jose = {extras = ["cryptography"], version = "*"}
 passlib = {extras = ["bcrypt"], version = "*"}
+fastapi-pagination = {extras = ["sqlalchemy"], version = "*"}
 
 [dev-packages]
 pylint = "*"

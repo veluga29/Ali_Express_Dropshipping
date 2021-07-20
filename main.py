@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 
 from app.database import models
 from app.database.database import engine
@@ -20,6 +21,7 @@ def create_app():
 
 
 app = create_app()
+add_pagination(app)
 
 
 @app.get("/")

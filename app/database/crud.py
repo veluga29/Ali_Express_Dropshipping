@@ -6,6 +6,7 @@ from jose import jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import Optional
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 from . import models, schemas
 
@@ -37,14 +38,16 @@ def get_search_text_and_page(db: Session, text: str, page: int):
 
 
 # autocomplete search text
-def get_search_text_like(db: Session, text: str, page: int, limit: int):
+def get_search_text_like(db: Session, text: str):
     return (
-        db.query(models.SearchText)
-        .filter(models.SearchText.text.like(f"%{text}%"))
-        .distinct(models.SearchText.text)
-        .offset((page - 1) * limit)
-        .limit(limit)
-        .all()
+        paginate(
+            db.query(models.SearchText)
+            .filter(models.SearchText.text.like(f"%{text}%"))
+            .distinct(models.SearchText.text)
+        )
+        # .offset((page - 1) * limit)
+        # .limit(limit)
+        # .all()
     )
 
 
