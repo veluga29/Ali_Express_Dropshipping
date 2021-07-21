@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Query
 from fastapi.exceptions import HTTPException
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from ..database import crud, schemas, models
@@ -11,6 +12,8 @@ from typing import List
 from fastapi_pagination import Page, add_pagination, paginate
 
 router = APIRouter(prefix="/products", tags=["products"])
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="aaa/token")
 
 """ HW July 3rd
 1. When SearchText is stored but ProductList isn't, return [] -> Please making sure both SearchText and ProductList are stored 
@@ -29,7 +32,7 @@ router = APIRouter(prefix="/products", tags=["products"])
 """
 
 
-@router.get("/", response_model=schemas.ProductList)
+@router.get("/", dependencies=[Depends(oauth2_scheme)], response_model=schemas.ProductList)
 async def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
     try:
         search_text = crud.get_search_text_and_page(db, text=text, page=page)
@@ -58,10 +61,11 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         raise
 
 
-@router.get("/search", response_model=Page[schemas.SearchTextOutput])  # get method로 수정해야 할까요?
+@router.get(
+    "/search", dependencies=[Depends(oauth2_scheme)], response_model=Page[schemas.SearchTextOutput]
+)  # get method로 수정해야 할까요?
 def autocomplete_search_text(
-    search: str = Query(..., max_length=50, regex="[A-Za-z0-9]"),
-    db: Session = Depends(get_db),
+    search: str = Query(..., max_length=50, regex="[A-Za-z0-9]"), db: Session = Depends(get_db)
 ):
     try:
         # search text like % query to return list of search texts
@@ -77,7 +81,9 @@ def autocomplete_search_text(
         raise HTTPException(status_code=400, detail=e)
 
 
-@router.get("/{product_id}", response_model=schemas.ProductDetail)
+@router.get(
+    "/{product_id}", dependencies=[Depends(oauth2_scheme)], response_model=schemas.ProductDetail
+)
 def create_details(product_id: str, db: Session = Depends(get_db)):
     try:
         db_detail = crud.get_product_detail(db, product_id=product_id)
