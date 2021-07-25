@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from ..database import crud, schemas, models
-from ..dependencies import get_db
+from ..dependencies import get_db, oauth2_scheme
 from ..zapiex.zapiex import zapiex_apis
 
 from datetime import datetime, timedelta
@@ -13,7 +13,6 @@ from fastapi_pagination import Page, add_pagination, paginate
 
 router = APIRouter(prefix="/products", tags=["products"])
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="aaa/token")
 
 """ HW July 3rd
 1. When SearchText is stored but ProductList isn't, return [] -> Please making sure both SearchText and ProductList are stored 

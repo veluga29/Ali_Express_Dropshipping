@@ -86,10 +86,6 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
 def authenticate_user(db: Session, user_id: str, password: str):
     user = db.query(models.User).filter_by(user_id=user_id).first()
     if not user:
@@ -113,3 +109,54 @@ def create_access_token(
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, token_secret_key, algorithm=token_algorithm)
     return encoded_jwt
+
+
+# accounts
+def get_user_by_email(db: Session, email: str):
+    return db.query(models.User).filter_by(email=email).first()
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+def create_user(db: Session, user: schemas.UserCreate):
+    hashed_password = get_password_hash(user.password)
+    db_user = models.User(
+        user_id=user.user_id,
+        email=user.email,
+        hashed_password=hashed_password,
+        first_name=user.first_name,
+        last_name=user.last_name,
+    )
+    db.add(db_user)
+    db.commit()
+    return db_user
+
+
+def get_users(db: Session, skip: int, limit: int):
+    return db.query(models.User).offset(skip).limit(limit).all()
+
+
+def update_user(db: Session, current_user: schemas.UserUpdate, user_in: schemas.UserUpdate):
+    hashed_password = (
+        get_password_hash(user_in.password) if user_in.password else current_user.hashed_password
+    )
+    user_dict = user_in.dict()
+    user_dict.update(hashed_password=hashed_password)
+    del user_dict["password"]
+    db.query(models.User).filter_by(email=current_user.email).update(user_dict)
+    db.commit()
+    db_user = db.query(models.User).filter_by(email=current_user.email).first()
+    return db_user
+
+
+def delete_user(db: Session, id: int):
+    db_user = db.query(models.User).filter_by(id=id).one()
+    db.delete(db_user)
+    db.commit()
+    return db_user
+
+
+def is_active(user: schemas.UserInDB):
+    return user.is_active

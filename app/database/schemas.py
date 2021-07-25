@@ -78,12 +78,35 @@ class Token(BaseModel):
     token_type: str
 
 
-class User(BaseModel):
+class TokenPayload(BaseModel):
+    sub: str
+    email: str
+
+
+# accounts
+class UserBase(BaseModel):
     user_id: str
     email: str
     first_name: str
     last_name: str
 
 
-class UserInDB(User):
+class UserCreate(UserBase):
+    password: str
+
+
+class UserInDB(UserBase):
     hashed_password: str
+
+
+class UserUpdate(UserBase):
+    password: Optional[str] = None
+
+
+class UserDelete(UserBase):
+    id: int
+
+
+class UserOut(UserBase):
+    class Config:
+        orm_mode = True

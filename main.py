@@ -4,7 +4,7 @@ from fastapi_pagination import add_pagination
 
 from app.database import models
 from app.database.database import engine
-from app.routers import authentication, products
+from app.routers import accounts, authentication, products
 
 
 def create_app():
@@ -16,6 +16,7 @@ def create_app():
     # 라우터 정의
     app.include_router(products.router)
     app.include_router(authentication.router)
+    app.include_router(accounts.router)
 
     return app
 
