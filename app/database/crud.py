@@ -112,8 +112,8 @@ def create_access_token(
 
 
 # accounts
-def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter_by(email=email).first()
+def get_user_by_email(db: Session, email: str, user_id: str):
+    return db.query(models.User).filter_by(email=email, user_id=user_id).first()
 
 
 def get_password_hash(password):
@@ -138,6 +138,7 @@ def get_users(db: Session, skip: int, limit: int):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 
+# refactoring update
 def update_user(db: Session, current_user: schemas.UserUpdate, user_in: schemas.UserUpdate):
     hashed_password = (
         get_password_hash(user_in.password) if user_in.password else current_user.hashed_password
@@ -148,7 +149,7 @@ def update_user(db: Session, current_user: schemas.UserUpdate, user_in: schemas.
     db.query(models.User).filter_by(email=current_user.email).update(user_dict)
     db.commit()
     db_user = db.query(models.User).filter_by(email=current_user.email).first()
-    return db_user
+    return db_user  # current_user
 
 
 def delete_user(db: Session, id: int):

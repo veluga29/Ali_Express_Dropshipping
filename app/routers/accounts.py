@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends, Body, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
@@ -15,9 +15,11 @@ router = APIRouter(prefix="/accounts", tags=["accounts"])
 
 @router.post("/", response_model=schemas.UserOut)
 async def create_user_info(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
+    db_user = crud.get_user_by_email(db, email=user.email, user_id=user.user_id)
     if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
+        )
     return crud.create_user(db=db, user=user)
 
 
@@ -29,23 +31,23 @@ async def get_user_info(current_user: schemas.UserInDB = Depends(get_current_use
 @router.put("/", response_model=schemas.UserOut)
 async def update_user_info(
     db: Session = Depends(get_db),
-    email: str = Body(None),
+    email: str = Body(None),  # validation
     password: str = Body(None),
     first_name: str = Body(None),
     last_name: str = Body(None),
     current_user: schemas.UserUpdate = Depends(get_current_user),
 ):
-    current_user_data = jsonable_encoder(current_user)
-    user_in = schemas.UserUpdate(**current_user_data)
+    # current_user_data = jsonable_encoder(current_user)
+    # user_in = schemas.UserUpdate(**current_user_data)
     if email is not None:
-        user_in.email = email
-    if password is not None:
-        user_in.password = password
+        current_user.email = email
+    if password is not None:  # hashed
+        current_user.password = password
     if first_name is not None:
-        user_in.first_name = first_name
+        current_user.first_name = first_name
     if last_name is not None:
-        user_in.last_name = last_name
-    user = crud.update_user(db, current_user=current_user, user_in=user_in)
+        current_user.last_name = last_name
+    user = crud.update_user(db, current_user=current_user, user_in=user_in)  # **user_info
     return user
 
 
@@ -53,8 +55,6 @@ async def update_user_info(
 async def delete_user_info(
     db: Session = Depends(get_db), current_user: schemas.UserDelete = Depends(get_current_user)
 ):
-    if not current_user:
-        raise HTTPException(status_code=404, detail="Current user not found")
     return crud.delete_user(db, id=current_user.id)
 
 

@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from ..database import crud, schemas, models
-from ..dependencies import get_db, oauth2_scheme
+from ..dependencies import get_current_user, get_db
 from ..zapiex.zapiex import zapiex_apis
 
 from datetime import datetime, timedelta
@@ -31,7 +31,7 @@ router = APIRouter(prefix="/products", tags=["products"])
 """
 
 
-@router.get("/", dependencies=[Depends(oauth2_scheme)], response_model=schemas.ProductList)
+@router.get("/", dependencies=[Depends(get_current_user)], response_model=schemas.ProductList)
 async def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
     try:
         search_text = crud.get_search_text_and_page(db, text=text, page=page)
@@ -61,7 +61,9 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
 
 
 @router.get(
-    "/search", dependencies=[Depends(oauth2_scheme)], response_model=Page[schemas.SearchTextOutput]
+    "/search",
+    dependencies=[Depends(get_current_user)],
+    response_model=Page[schemas.SearchTextOutput],
 )  # get method로 수정해야 할까요?
 def autocomplete_search_text(
     search: str = Query(..., max_length=50, regex="[A-Za-z0-9]"), db: Session = Depends(get_db)
@@ -81,7 +83,7 @@ def autocomplete_search_text(
 
 
 @router.get(
-    "/{product_id}", dependencies=[Depends(oauth2_scheme)], response_model=schemas.ProductDetail
+    "/{product_id}", dependencies=[Depends(get_current_user)], response_model=schemas.ProductDetail
 )
 def create_details(product_id: str, db: Session = Depends(get_db)):
     try:
