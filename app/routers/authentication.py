@@ -20,16 +20,16 @@ router = APIRouter(prefix="/aaa", tags=["aaa"])
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
-    user = crud.authenticate_user(db, form_data.username, form_data.password)
+    user = crud.authenticate_user(db, email=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect user_id or password",
+            detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = crud.create_access_token(
-        data={"sub": user.user_id, "email": user.email},
+        data={"sub": user.email},
         token_secret_key=TOKEN_SECRET_KEY,
         token_algorithm=TOKEN_ALGORITHM,
         expires_delta=access_token_expires,

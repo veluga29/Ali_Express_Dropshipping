@@ -26,6 +26,7 @@ def update_product_list(db: Session, search_text_id: int, information: dict):
     db_product_list = db.query(models.ProductList).filter_by(search_text_id=search_text_id).first()
     db_product_list.information = information
     db.commit()
+    db.refresh(db_product_list)
     return db_product_list
 
 
@@ -69,6 +70,7 @@ def update_product_details(db: Session, product_id: str, information: dict):
     for key, value in information.items():
         setattr(db_item, key, value)
     db.commit()
+    db.refresh(db_item)
     return db_item
 
 
@@ -86,11 +88,11 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def authenticate_user(db: Session, user_id: str, password: str):
-    user = db.query(models.User).filter_by(user_id=user_id).first()
+def authenticate_user(db: Session, email: str, password: str):
+    user = db.query(models.User).filter_by(email=email).first()
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.password):
         return False
     return user
 
@@ -112,8 +114,8 @@ def create_access_token(
 
 
 # accounts
-def get_user_by_email(db: Session, email: str, user_id: str):
-    return db.query(models.User).filter_by(email=email, user_id=user_id).first()
+def get_user_by_email(db: Session, email: schemas.EmailStr):
+    return db.query(models.User).filter_by(email=email).first()
 
 
 def get_password_hash(password):
@@ -123,9 +125,8 @@ def get_password_hash(password):
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = get_password_hash(user.password)
     db_user = models.User(
-        user_id=user.user_id,
         email=user.email,
-        hashed_password=hashed_password,
+        password=hashed_password,
         first_name=user.first_name,
         last_name=user.last_name,
     )
@@ -134,30 +135,23 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-def get_users(db: Session, skip: int, limit: int):
-    return db.query(models.User).offset(skip).limit(limit).all()
-
-
-# refactoring update
-def update_user(db: Session, current_user: schemas.UserUpdate, user_in: schemas.UserUpdate):
-    hashed_password = (
-        get_password_hash(user_in.password) if user_in.password else current_user.hashed_password
-    )
-    user_dict = user_in.dict()
-    user_dict.update(hashed_password=hashed_password)
-    del user_dict["password"]
-    db.query(models.User).filter_by(email=current_user.email).update(user_dict)
+def update_user(db: Session, db_user: models.User, update_data: schemas.UserUpdate):
+    if update_data.password is not None:
+        update_data.password = get_password_hash(update_data.password)
+    update_data_dict = update_data.dict(exclude_unset=True)
+    for key, value in update_data_dict.items():
+        setattr(db_user, key, value)
     db.commit()
-    db_user = db.query(models.User).filter_by(email=current_user.email).first()
-    return db_user  # current_user
+    db.refresh(db_user)
+    return db_user
 
 
-def delete_user(db: Session, id: int):
-    db_user = db.query(models.User).filter_by(id=id).one()
+def delete_user(db: Session, db_user: models.User):
     db.delete(db_user)
     db.commit()
     return db_user
 
 
-def is_active(user: schemas.UserInDB):
-    return user.is_active
+# for super user
+# def get_users(db: Session, skip: int, limit: int):
+#     return db.query(models.User).offset(skip).limit(limit).all()

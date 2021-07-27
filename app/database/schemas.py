@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class SearchText(BaseModel):
@@ -79,34 +79,27 @@ class Token(BaseModel):
 
 
 class TokenPayload(BaseModel):
-    sub: str
-    email: str
+    sub: EmailStr
 
 
 # accounts
 class UserBase(BaseModel):
-    user_id: str
-    email: str
-    first_name: str
-    last_name: str
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
 
 
 class UserCreate(UserBase):
+    email: EmailStr
     password: str
-
-
-class UserInDB(UserBase):
-    hashed_password: str
 
 
 class UserUpdate(UserBase):
     password: Optional[str] = None
 
 
-class UserDelete(UserBase):
+class User(UserBase):
     id: int
+    email: EmailStr
 
-
-class UserOut(UserBase):
     class Config:
         orm_mode = True

@@ -80,6 +80,6 @@ class User(AbstractBase):
 
     # user_id = Column(String(100), index=True, unique=True)
     email = Column(EmailType, index=True, unique=True, nullable=False)
-    hashed_password = Column(String(200))
+    password = Column(String(60), nullable=False)
     first_name = Column(String(30))
     last_name = Column(String(30))
