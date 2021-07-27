@@ -2,8 +2,7 @@ import sqlalchemy as sa
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON, ARRAY
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
-
-# from sqlalchemy_utils import EmailType
+from sqlalchemy_utils import EmailType
 
 from .database import Base
 
@@ -79,8 +78,8 @@ class ProductDetail(AbstractBase):
 class User(AbstractBase):
     __tablename__ = "users"
 
-    user_id = Column(String(100), index=True, unique=True)
-    # email = Column(EmailType, unique=True)
+    # user_id = Column(String(100), index=True, unique=True)
+    email = Column(EmailType, index=True, unique=True, nullable=False)
     hashed_password = Column(String(200))
     first_name = Column(String(30))
     last_name = Column(String(30))
