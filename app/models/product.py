@@ -1,23 +1,9 @@
-import sqlalchemy as sa
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON, ARRAY
-from sqlalchemy.dialects import postgresql
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON
 from sqlalchemy.orm import relationship
-from sqlalchemy_utils import EmailType
 
-from .database import Base
-
-
-class AbstractBase(Base):
-    __abstract__ = True
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    create_dt = Column(postgresql.TIMESTAMP(timezone=True), server_default=sa.func.now())
-    update_dt = Column(
-        postgresql.TIMESTAMP(timezone=True), default=sa.func.now(), onupdate=sa.func.now()
-    )
+from app.models.model import AbstractBase
 
 
-# HW
 class SearchText(AbstractBase):
     __tablename__ = "search_texts"
 
@@ -30,9 +16,9 @@ class SearchText(AbstractBase):
 class ProductList(AbstractBase):
     __tablename__ = "product_lists"
 
-    # 제품에 대한 정보들이 계층적으로 구성되어 있어, JSON으로 저장하는게 어떨까 생각했습니다.
     information = Column(JSON, nullable=True)
     search_text_id = Column(Integer, ForeignKey("search_texts.id"))
+
     search_text = relationship("SearchText", back_populates="product_list")
 
 
@@ -56,30 +42,20 @@ class ProductDetail(AbstractBase):
     hasPurchaseLimit = Column("has_purchase_limit", Boolean, default=False)
     maxPurchaseLimit = Column("max_purchase_limit", Integer)
     processingTimeInDays = Column("processing_time_in_days", Integer)
-    productImages = Column("product_images", JSON)  # list
-    productCategory = Column("product_category", JSON)  # dict
-    seller = Column(JSON)  # dict
-    sellerDetails = Column("seller_details", JSON)  # dict
+    productImages = Column("product_images", JSON)
+    productCategory = Column("product_category", JSON)
+    seller = Column(JSON)
+    sellerDetails = Column("seller_details", JSON)
     hasSinglePrice = Column("has_single_price", Boolean)
     price = Column(JSON)
-    priceSummary = Column("price_summary", JSON)  # dict, docs와 변수명이 다름
+    priceSummary = Column("price_summary", JSON)
     hasAttributes = Column("has_attributes", Boolean)
-    attributes = Column(JSON)  # list
+    attributes = Column(JSON)
     hasReviewsRatings = Column("has_reviews_ratings", Boolean)
-    reviewsRatings = Column("reviews_ratings", JSON)  # dict
+    reviewsRatings = Column("reviews_ratings", JSON)
     hasProperties = Column("has_properties", Boolean)
-    properties = Column(JSON)  # list
+    properties = Column(JSON)
     hasVariations = Column("has_variations", Boolean)
-    variations = Column(JSON)  # list
-    shipping = Column(JSON)  # dict
+    variations = Column(JSON)
+    shipping = Column(JSON)
     htmlDescription = Column("html_description", String)
-
-
-class User(AbstractBase):
-    __tablename__ = "users"
-
-    # user_id = Column(String(100), index=True, unique=True)
-    email = Column(EmailType, index=True, unique=True, nullable=False)
-    password = Column(String(60), nullable=False)
-    first_name = Column(String(30))
-    last_name = Column(String(30))

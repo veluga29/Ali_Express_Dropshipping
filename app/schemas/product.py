@@ -1,8 +1,8 @@
 from typing import List, Optional
+from pydantic import BaseModel
 
-from pydantic import BaseModel, EmailStr
 
-
+# search text
 class SearchText(BaseModel):
     text: str
 
@@ -55,7 +55,7 @@ class ProductDetail(BaseModel):
     seller: dict
     sellerDetails: dict
     hasSinglePrice: bool
-    priceSummary: Optional[dict]  # optional하게 둬도 될지
+    priceSummary: Optional[dict]
     price: Optional[dict]
     hasAttributes: bool
     attributes: List[dict]
@@ -67,39 +67,6 @@ class ProductDetail(BaseModel):
     variations: List[dict]
     shipping: dict
     htmlDescription: str
-
-    class Config:
-        orm_mode = True
-
-
-# authentication
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenPayload(BaseModel):
-    sub: EmailStr
-
-
-# accounts
-class UserBase(BaseModel):
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-
-
-class UserCreate(UserBase):
-    email: EmailStr
-    password: str
-
-
-class UserUpdate(UserBase):
-    password: Optional[str] = None
-
-
-class User(UserBase):
-    id: int
-    email: EmailStr
 
     class Config:
         orm_mode = True
