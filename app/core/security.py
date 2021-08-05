@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import Optional
 
-from app.models.user import User
+from app.models import model_user
 
 
 TOKEN_ALGORITHM = "HS256"
@@ -22,7 +22,7 @@ def get_password_hash(password):
 
 
 def authenticate_user(db: Session, email: str, password: str):
-    user = db.query(User).filter_by(email=email).first()
+    user = db.query(model_user.User).filter_by(email=email).first()
     if not user:
         return False
     if not verify_password(password, user.password):

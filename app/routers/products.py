@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from fastapi_pagination import Page
 
 from app.crud import crud_product
-from app.schemas.product import ProductList, SearchTextOutput, ProductDetail
+from app.schemas import pyd_product
 from app.dependencies import get_current_user, get_db
 from app.utils.zapiex import zapiex_apis
 
@@ -24,7 +24,7 @@ router = APIRouter(prefix="/products", tags=["products"])
 """
 
 
-@router.get("/", dependencies=[Depends(get_current_user)], response_model=ProductList)
+@router.get("/", dependencies=[Depends(get_current_user)], response_model=pyd_product.ProductList)
 async def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
     try:
         search_text = crud_product.get_search_text_and_page(db, text=text, page=page)
@@ -55,7 +55,7 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
 @router.get(
     "/search",
     dependencies=[Depends(get_current_user)],
-    response_model=Page[SearchTextOutput],
+    response_model=Page[pyd_product.SearchTextOutput],
 )
 def autocomplete_search_text(
     search: str = Query(..., max_length=50, regex="[A-Za-z0-9]"), db: Session = Depends(get_db)
@@ -66,7 +66,11 @@ def autocomplete_search_text(
         raise HTTPException(status_code=400, detail=e)
 
 
-@router.get("/{product_id}", dependencies=[Depends(get_current_user)], response_model=ProductDetail)
+@router.get(
+    "/{product_id}",
+    dependencies=[Depends(get_current_user)],
+    response_model=pyd_product.ProductDetail,
+)
 def create_details(product_id: str, db: Session = Depends(get_db)):
     try:
         db_detail = crud_product.get_product_detail(db, product_id=product_id)

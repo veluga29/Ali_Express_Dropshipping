@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, JSON
 from sqlalchemy.orm import relationship
 
-from app.models.model import AbstractBase
+from app.models.base import AbstractBase
 
 
 class SearchText(AbstractBase):

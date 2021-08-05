@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String
 from sqlalchemy_utils import EmailType
 
-from app.models.model import AbstractBase
+from app.models.base import AbstractBase
 
 
 class User(AbstractBase):

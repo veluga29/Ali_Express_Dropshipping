@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.core.security import authenticate_user, create_access_token, TOKEN_ALGORITHM
-from app.schemas.token import Token
+from app.schemas import pyd_token
 from app.dependencies import get_db
 from app.settings import TOKEN_SECRET_KEY
 
@@ -17,7 +17,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 1
 router = APIRouter(prefix="/aaa", tags=["aaa"])
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=pyd_token.Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):

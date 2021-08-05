@@ -1,18 +1,18 @@
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash
-from app.models.user import User
-from app.schemas import user
+from app.models import model_user
+from app.schemas import pyd_user
 
 
 # accounts
-def get_user_by_email(db: Session, email: user.EmailStr):
-    return db.query(User).filter_by(email=email).first()
+def get_user_by_email(db: Session, email: pyd_user.EmailStr):
+    return db.query(model_user.User).filter_by(email=email).first()
 
 
-def create_user(db: Session, user: user.UserCreate):
+def create_user(db: Session, user: pyd_user.UserCreate):
     hashed_password = get_password_hash(user.password)
-    db_user = User(
+    db_user = model_user.User(
         email=user.email,
         password=hashed_password,
         first_name=user.first_name,
@@ -23,7 +23,7 @@ def create_user(db: Session, user: user.UserCreate):
     return db_user
 
 
-def update_user(db: Session, db_user: User, update_data: user.UserUpdate):
+def update_user(db: Session, db_user: model_user.User, update_data: pyd_user.UserUpdate):
     if update_data.password is not None:
         update_data.password = get_password_hash(update_data.password)
     update_data_dict = update_data.dict(exclude_unset=True)
@@ -34,7 +34,7 @@ def update_user(db: Session, db_user: User, update_data: user.UserUpdate):
     return db_user
 
 
-def delete_user(db: Session, db_user: User):
+def delete_user(db: Session, db_user: model_user.User):
     db.delete(db_user)
     db.commit()
     return db_user

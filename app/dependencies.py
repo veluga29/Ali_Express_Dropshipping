@@ -7,7 +7,7 @@ from pydantic import ValidationError
 
 from app.crud.crud_user import get_user_by_email
 from app.core.security import TOKEN_ALGORITHM
-from app.schemas.token import TokenPayload
+from app.schemas import pyd_token
 from app.database import SessionLocal
 from app.settings import TOKEN_SECRET_KEY
 
@@ -26,7 +26,7 @@ def get_db():
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, TOKEN_SECRET_KEY, algorithms=[TOKEN_ALGORITHM])
-        token_data = TokenPayload(**payload)
+        token_data = pyd_token.TokenPayload(**payload)
     except (jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
