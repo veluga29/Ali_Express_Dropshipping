@@ -1,0 +1,24 @@
+.header_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 40px;
+}
+
+.logo .nav_ul {
+  flex: none;
+}
+
+.nav_ul {
+  display: flex;
+  list-style: none;
+  margin-right: 70px;
+}
+
+.nav_li {
+  padding: 10px 40px;
+  font-size: xx-large;
+  color: white;
+  border: 1px solid black;
+  background-color: royalblue;
+}

@@ -1,0 +1,6 @@
+.layout_container {
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+  grid-gap: 10px;
+  /* color: white; */
+}
