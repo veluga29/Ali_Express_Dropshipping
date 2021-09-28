@@ -3,6 +3,7 @@ from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from fastapi_pagination import Page
+import pytz
 
 from app.crud import crud_product
 from app.schemas import pyd_product
@@ -11,6 +12,7 @@ from app.utils.zapiex import zapiex_apis
 
 
 router = APIRouter(prefix="/products", tags=["products"])
+utc = pytz.UTC
 
 
 """
@@ -30,7 +32,9 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
         search_text = crud_product.get_search_text_and_page(db, text=text, page=page)
         if search_text:
             product_list = search_text.product_list[0]
-            if product_list.update_dt >= datetime.utcnow() - timedelta(days=1):
+            update_date = product_list.update_dt
+            one_day_before_now = utc.localize(datetime.utcnow() - timedelta(days=1))
+            if update_date >= one_day_before_now:
                 return search_text.product_list[0]
             search_info = zapiex_apis.search_products(text, page)
             status_code = search_info["statusCode"]
@@ -75,7 +79,9 @@ def create_details(product_id: str, db: Session = Depends(get_db)):
     try:
         db_detail = crud_product.get_product_detail(db, product_id=product_id)
         if db_detail:
-            if db_detail.update_dt >= datetime.utcnow() - timedelta(days=1):
+            update_date = db_detail.update_dt
+            one_day_before_now = utc.localize(datetime.utcnow() - timedelta(days=1))
+            if update_date >= one_day_before_now:
                 return db_detail
             product_info = zapiex_apis.get_product(product_id)
             status_code = product_info["statusCode"]

@@ -17,6 +17,7 @@ passlib = {extras = ["bcrypt"], version = "*"}
 fastapi-pagination = {extras = ["sqlalchemy"], version = "*"}
 sqlalchemy-utils = "*"
 pydantic = {extras = ["email"], version = "*"}
+pytz = "*"
 
 [dev-packages]
 pylint = "*"
