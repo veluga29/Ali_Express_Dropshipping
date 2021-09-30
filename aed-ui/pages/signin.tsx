@@ -1,16 +1,16 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import Layout from '../src/components/layout'
-import styles from '/styles/signing.module.css'
+import styles from '/styles/signin.module.css'
 
 
-export default function Signing() {
+export default function Signin() {
   return (
     <Layout>
       <Head>
-        <title>Signing</title>
+        <title>Signin</title>
       </Head>
-      <div className={styles.signing_container}>
+      <div className={styles.signin_container}>
         <main>
           <form className={styles.login_form}>
             <div className={styles.login_form_items}>
@@ -29,7 +29,6 @@ export default function Signing() {
             </div>
           </form>
         </main>
-        <footer className={styles.signing_footer}>Footer</footer>
       </div>
     </Layout>
   )

@@ -1,4 +1,5 @@
 import Header from './header'
+import Footer from './footer'
 import styles from '/styles/layout.module.css'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -8,6 +9,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Header />
       </div>
       <div>{children}</div>
+      <div>
+        <Footer />
+      </div>
     </div>
   )
 }
