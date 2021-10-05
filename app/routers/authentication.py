@@ -11,7 +11,7 @@ from app.settings import TOKEN_SECRET_KEY
 from datetime import timedelta
 
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 1
+ACCESS_TOKEN_EXPIRE_DAYS = 1
 
 
 router = APIRouter(prefix="/aaa", tags=["aaa"])
@@ -28,7 +28,7 @@ async def login_for_access_token(
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     access_token = create_access_token(
         data={"sub": user.email},
         token_secret_key=TOKEN_SECRET_KEY,

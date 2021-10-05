@@ -1,6 +1,7 @@
 import Head from 'next/head'
-import Layout from '../../src/components/layout'
 import Image from 'next/image'
+
+import Layout from '../../src/components/layout'
 import styles from '/styles/products.module.css'
 
 import axios from 'axios'
@@ -16,7 +17,10 @@ export default function ProductDetail( { productData } ) {
             width={200}
             alt="Product Image" />
         <h1>{productData.title}</h1>
-        <p>{productData}</p>
+        <p>
+          {/* {productData.price.web.display || 0} <br /> */}
+          {/* {productData.reviewsRatings.averageRating || 0} */}
+        </p>
       </>
     )
   } else {
@@ -43,26 +47,21 @@ export default function ProductDetail( { productData } ) {
   )
 }
 
-
-
-export async function getStaticPaths() {
+export async function getServerSideProps({ params }) {
+  let props = {};
   try {
-    const response = await axios.get('http://localhost:8000/products?text=doggy22&page=1', {
+    const response = await axios.get(`http://localhost:8000/products/${params.product_id}`, {
       headers: {  
-        Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNpYW5Aa2FrYW8uY29tIiwiZXhwIjoxNjMzMDIzMDU0fQ.6oatxthaqVmO9Gb1xqJigt2zvkQAAw95C4N-KcxGt7I"
+        Authorization: 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNpYW5Aa2FrYW8uY29tIiwiZXhwIjoxNjMzMzY1NDcwfQ.K4lFI-zsdfA4ESv7Gg2R6rqw78hj81tRGDncCTFXnxg'
       }
     });
-    const productsInfo = response.data;
-    const paths = productsInfo.information.items.map(item => {
-      params: { product_id: item.productId }
-    });
-    
-    return { paths, fallback: 'true' }
-  } catch (error) {
-    
+    const productData = response.data
+    return {
+      props: {
+        productData,
+      }
+    }
+  } catch {
+    props.productData = null;
   }
-}
-
-export async function getStaticProps({ params }) {
-  
 }
