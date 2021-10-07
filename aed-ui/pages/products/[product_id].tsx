@@ -35,24 +35,21 @@ export default function ProductDetail( { productData } ) {
         <title>Product Detail</title>
       </Head>
       <section>
-        <form className={styles.search_bar}>
-          <input className={styles.search_bar_content} name="search" type="text" placeholder="Search items you want" />
-          <button className={styles.search_bar_content} type="submit">Search</button>
-        </form>
-      </section>
-      <section>
         {product}
       </section>
     </Layout>
   )
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, req }) {
   let props = {};
   try {
+    const cookieString = req ? req.headers.cookie : '';
+    const tokenIdx = cookieString.indexOf('access_token') + 13;
+    const access_token = cookieString.slice(tokenIdx).split(';')[0];
     const response = await axios.get(`http://localhost:8000/products/${params.product_id}`, {
       headers: {  
-        Authorization: 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNpYW5Aa2FrYW8uY29tIiwiZXhwIjoxNjMzMzY1NDcwfQ.K4lFI-zsdfA4ESv7Gg2R6rqw78hj81tRGDncCTFXnxg'
+        Authorization: `bearer ${access_token}`
       }
     });
     const productData = response.data
@@ -63,5 +60,8 @@ export async function getServerSideProps({ params }) {
     }
   } catch {
     props.productData = null;
+  }
+  return {
+    props
   }
 }

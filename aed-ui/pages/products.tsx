@@ -38,22 +38,26 @@ export default function Products({ productsData }: any) {
     const productListArray = productList.map((product: any) => {
       return (
         <li className={styles.product_box} key={product.productId}>
-          <Image
-            src={product.imageUrl}
-            height={200}
-            width={200}
-            alt="Product Image" />
-          <h3>{product.title}</h3>
-          <p>
-            Total Orders: {product.totalOrders || 0}<br/>
-            Average Rating: {product.averageRating || 0}
-          </p>
+          <Link href={`/products/${product.productId}`}>
+            <a>
+              <Image
+                src={product.imageUrl}
+                height={200}
+                width={200}
+                alt="Product Image" />
+              <h3>{product.title}</h3>
+              <p>
+                Total Orders: {product.totalOrders || 0}<br/>
+                Average Rating: {product.averageRating || 0}
+              </p>
+            </a>
+          </Link>
         </li>
       )
     });
     products = (
       <ul className={styles.product_list}>
-        {productListArray}
+        {productListArray}          
       </ul>);
     
   } else {
@@ -91,7 +95,7 @@ export async function getStaticProps() {
     try {      
       const response = await axios.get('http://localhost:8000/products?text=doggy22&page=1', {
         headers: {  
-            Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsd…DE1fQ.ImgEfT3DyXlzhLTmZv0USRy7fLeO8vrN0LiGJpxPwNs`
+            Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNpYW5Aa2FrYW8uY29tIiwiZXhwIjoxNjMzNjM0NTQzfQ.5GTM9T1MlH7mIiCzFP4wVyyRNCAZBZkF54N5E3Ef1-Q`
         }
       });
       
