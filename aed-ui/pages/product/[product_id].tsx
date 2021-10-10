@@ -25,7 +25,7 @@ export default function ProductDetail( { productData } ) {
     )
   } else {
     product = (
-        <h2>Sorry, there is no detail.</h2>
+        <h2>Sorry, the product is not available at this moment</h2>
     )
   }
 
@@ -45,8 +45,27 @@ export async function getServerSideProps({ params, req }) {
   let props = {};
   try {
     const cookieString = req ? req.headers.cookie : '';
-    const tokenIdx = cookieString.indexOf('access_token') + 13;
-    const access_token = cookieString.slice(tokenIdx).split(';')[0];
+    let access_token;
+    // cookie parsing
+    if (cookieString) {
+      const cookieArray = cookieString.split(';');
+      for (let cookie of cookieArray) {
+        const pureCookie = cookie.trim();
+        const key = pureCookie.split('=')[0];
+        const value = pureCookie.split('=')[1];
+        if (key === 'access_token') {
+          access_token = value;
+        }
+      }
+    }
+    if (!access_token) {
+      return {
+        redirect: {
+          destination: `/signin?retUrl=/product/${params.product_id}`,
+          permanent: false,
+        },
+      }
+    }
     const response = await axios.get(`http://localhost:8000/products/${params.product_id}`, {
       headers: {  
         Authorization: `bearer ${access_token}`

@@ -5,13 +5,22 @@ import Layout from '../src/components/layout'
 import styles from '/styles/signin.module.css'
 
 import { useState } from "react";
+import { useEffect } from 'react'
 import { useCookies } from "react-cookie"
 import axios from 'axios';
 import FormData from 'form-data';
 
 export default function Signin() {
-  const [, setCookie] = useCookies(["access_token"]);
+  const [cookies, setCookie] = useCookies(["access_token"]);
   const router = useRouter();
+  useEffect(() => {
+    if (router.query.retUrl && cookies.access_token) {
+      router.push(router.query.retUrl);
+    }
+    else if (cookies.access_token) {
+      router.push('/products');
+    }
+  })
 
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ] = useState("");
@@ -43,9 +52,11 @@ export default function Signin() {
           //   httpOnly: true
           }
         );
-        router.push('/products');
       }
     } catch (error) {
+      if (error.response.status === 401) {
+        alert("You entered wrong email or password, Please try to enter the right email and password!");
+      }
       console.log(error);
     }
   };

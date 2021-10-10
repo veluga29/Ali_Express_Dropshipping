@@ -10,12 +10,16 @@ export default function Header() {
   return (
     <header className={styles.header_container}>
       <div className={styles.logo}>
-        <Image 
-          src="/images/logo.jpg"
-          height={80}
-          width={80}
-          alt="logo of ali express dropshipping"
-        />
+        <Link href="/">
+          <a>
+            <Image 
+              src="/images/logo.jpg"
+              height={80}
+              width={80}
+              alt="logo of ali express dropshipping"
+            />
+          </a>
+        </Link>
       </div>
       <nav>
         <ul className={styles.nav_ul}>

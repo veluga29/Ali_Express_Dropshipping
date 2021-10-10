@@ -5,11 +5,20 @@ import Layout from '../src/components/layout'
 import styles from '/styles/signin.module.css'
 
 import { useState } from "react";
+import { useEffect } from 'react'
 import axios from 'axios';
+import { useCookies } from "react-cookie"
 
 export default function Signup() {
   const router = useRouter();
   const [ user, setUser ] = useState({});
+  const [ cookies ] = useCookies();
+  useEffect(() => {
+    if (cookies.access_token) {
+      router.push('/products');
+    }
+  })
+
 
   const handleChange = ({ target }) => {
     const { name, value } = target;

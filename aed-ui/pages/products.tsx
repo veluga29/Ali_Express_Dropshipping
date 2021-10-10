@@ -38,7 +38,7 @@ export default function Products({ productsData }: any) {
     const productListArray = productList.map((product: any) => {
       return (
         <li className={styles.product_box} key={product.productId}>
-          <Link href={`/products/${product.productId}`}>
+          <Link href={`/product/${product.productId}`}>
             <a>
               <Image
                 src={product.imageUrl}
@@ -78,6 +78,7 @@ export default function Products({ productsData }: any) {
           name="search" 
           type="text" 
           value={searchText} 
+          autoComplete="off"
           onChange={handleChange} 
           placeholder="Search items you want" />
         <button className={styles.search_bar_content} type="submit">Search</button>
