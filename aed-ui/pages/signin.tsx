@@ -14,16 +14,37 @@ export default function Signin() {
   const [cookies, setCookie] = useCookies(["access_token"]);
   const router = useRouter();
   useEffect(() => {
-    if (router.query.retUrl && cookies.access_token) {
-      router.push(router.query.retUrl);
+    let access_token = cookies.access_token;
+    if (!access_token) {
+      return;
     }
-    else if (cookies.access_token) {
-      router.push('/products');
+    // authentication of JWT token
+    const verifyForReturl = async () => { 
+      try{
+        let retUrl = router.query.retUrl;
+        const response = await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
+        if (response.data.valid && retUrl) {
+          router.push(retUrl);
+        } else if (response.data.valid) {
+          router.push('/products');
+        }
+      } catch (error) {
+        alert('You have Invalid access token. Please sign-in again.');
+      }
     }
-  })
+    verifyForReturl();
+    // if (router.query.retUrl && cookies.access_token) {
+    //   router.push(router.query.retUrl);
+    // }
+    // else if (cookies.access_token) {
+    //   router.push('/products');
+    // }
+  }, [cookies.access_token, router]);
 
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ] = useState("");
+  const [ isInvalid, setIsInvalid ] = useState(false);
+  // const [ getToken, setGetToken ] = useState(false);
 
   const handleEmailChange = ({ target: { value } }) => setEmail(value);
   const handlePasswordChange = ({ target: { value } }) => setPassword(value);
@@ -39,6 +60,7 @@ export default function Signin() {
           'Content-Type': 'multipart/form-data'
         }
       });
+      // setGetToken(true);
       if (response.status == 200) {
         const accessToken = response.data.access_token;
         const afterOneDay = new Date();
@@ -55,7 +77,7 @@ export default function Signin() {
       }
     } catch (error) {
       if (error.response.status === 401) {
-        alert("You entered wrong email or password, Please try to enter the right email and password!");
+        setIsInvalid(true);
       }
       console.log(error);
     }
@@ -84,6 +106,11 @@ export default function Signin() {
                 type="password" 
                 onChange={handlePasswordChange}
                 placeholder="Password" />
+            </div>
+            <div style={{ 
+                display: `${(isInvalid && "block") || "none"}`
+            }}>
+              You entered wrong email or password, Please try to enter the right email and password!
             </div>
             <div className={`${styles.login_form_items} ${styles.login_content}`}>
               <Link href="/signup">

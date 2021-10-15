@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import Layout from '../src/components/layout'
+import Autocomplete from '../src/components/autocomplete'
 import Image from 'next/image'
 import styles from '/styles/products.module.css'
 
@@ -10,7 +11,6 @@ import axios from 'axios';
 
 export default function Products({ productsData }: any) {
   const [cookies] = useCookies(["access_token"]);
-
   const [searchText, setSearchText] = useState("");
   const [productList, setProductList] = useState(productsData);
   const handleChange = ({ target: { value } }) => setSearchText(value);
@@ -74,13 +74,15 @@ export default function Products({ productsData }: any) {
     <section>
       <form className={styles.search_bar} onSubmit={handleSubmit}>
         <input 
-          className={styles.search_bar_content} 
+          className={styles.search_bar_content}
           name="search" 
           type="text" 
           value={searchText} 
           autoComplete="off"
+          list="datalistOptions"
           onChange={handleChange} 
           placeholder="Search items you want" />
+        <Autocomplete searchText={searchText} />
         <button className={styles.search_bar_content} type="submit">Search</button>
       </form>
     </section>
