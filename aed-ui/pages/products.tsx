@@ -5,12 +5,33 @@ import Autocomplete from '../src/components/autocomplete'
 import Image from 'next/image'
 import styles from '/styles/products.module.css'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie"
 import axios from 'axios';
+import router from 'next/router'
 
 export default function Products({ productsData }: any) {
-  const [cookies] = useCookies(["access_token"]);
+  const [cookies, , removeCookie] = useCookies(["access_token"]);
+  let access_token = cookies.access_token;
+  
+  useEffect(() => {
+    if (!access_token) {
+      router.push('/signin');
+      return;
+    }
+    const verifyToken = async () => { 
+      try{
+        await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
+      } catch (error) {
+        // Delete access token cookie
+        removeCookie('access_token');
+        router.push('/signin');
+      }
+    }
+    verifyToken();
+  })
+
+
   const [searchText, setSearchText] = useState("");
   const [productList, setProductList] = useState(productsData);
   const handleChange = ({ target: { value } }) => setSearchText(value);
@@ -67,29 +88,52 @@ export default function Products({ productsData }: any) {
   }
 
   return (
-  <Layout>
-    <Head>
-      <title>Products</title>
-    </Head>
-    <section>
-      <form className={styles.search_bar} onSubmit={handleSubmit}>
-        <input 
-          className={styles.search_bar_content}
-          name="search" 
-          type="text" 
-          value={searchText} 
-          autoComplete="off"
-          list="datalistOptions"
-          onChange={handleChange} 
-          placeholder="Search items you want" />
-        <Autocomplete searchText={searchText} />
-        <button className={styles.search_bar_content} type="submit">Search</button>
-      </form>
-    </section>
-    <section>
-      {products}
-    </section>
-  </Layout>
+    <Layout>
+      <Head>
+        <title>Products</title>
+      </Head>
+      <section className="row">
+        <form className="row gx-5" onSubmit={handleSubmit}>
+          <input 
+            className={`col-md-3 offset-2`}
+            name="search" 
+            type="text" 
+            value={searchText} 
+            autoComplete="off"
+            list="datalistOptions"
+            onChange={handleChange} 
+            placeholder="Search items you want" />
+          <Autocomplete searchText={searchText} />
+          <button className={`col-md-1 offset-1`} type="submit">Search</button>
+        </form>
+      </section>
+      <section className="row">
+        {products}
+      </section>
+    </Layout>
+    // <Layout>
+    //   <Head>
+    //     <title>Products</title>
+    //   </Head>
+    //   <section>
+    //     <form className={styles.search_bar} onSubmit={handleSubmit}>
+    //       <input 
+    //         className={styles.search_bar_content}
+    //         name="search" 
+    //         type="text" 
+    //         value={searchText} 
+    //         autoComplete="off"
+    //         list="datalistOptions"
+    //         onChange={handleChange} 
+    //         placeholder="Search items you want" />
+    //       <Autocomplete searchText={searchText} />
+    //       <button className={styles.search_bar_content} type="submit">Search</button>
+    //     </form>
+    //   </section>
+    //   <section>
+    //     {products}
+    //   </section>
+    // </Layout>
   )
 }
 

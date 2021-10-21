@@ -11,15 +11,16 @@ import axios from 'axios';
 import FormData from 'form-data';
 
 export default function Signin() {
-  const [cookies, setCookie] = useCookies(["access_token"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
   const router = useRouter();
+  
+  let access_token = cookies.access_token;
   useEffect(() => {
-    let access_token = cookies.access_token;
+    // authentication of JWT token
     if (!access_token) {
       return;
     }
-    // authentication of JWT token
-    const verifyForReturl = async () => { 
+    const verifyTokenForReturl = async () => { 
       try{
         let retUrl = router.query.retUrl;
         const response = await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
@@ -29,22 +30,16 @@ export default function Signin() {
           router.push('/products');
         }
       } catch (error) {
-        alert('You have Invalid access token. Please sign-in again.');
+        // Delete access token cookie
+        removeCookie('access_token')
       }
     }
-    verifyForReturl();
-    // if (router.query.retUrl && cookies.access_token) {
-    //   router.push(router.query.retUrl);
-    // }
-    // else if (cookies.access_token) {
-    //   router.push('/products');
-    // }
-  }, [cookies.access_token, router]);
+    verifyTokenForReturl();
+  })
 
   const [ email, setEmail ] = useState("");
   const [ password, setPassword ] = useState("");
   const [ isInvalid, setIsInvalid ] = useState(false);
-  // const [ getToken, setGetToken ] = useState(false);
 
   const handleEmailChange = ({ target: { value } }) => setEmail(value);
   const handlePasswordChange = ({ target: { value } }) => setPassword(value);
@@ -60,7 +55,6 @@ export default function Signin() {
           'Content-Type': 'multipart/form-data'
         }
       });
-      // setGetToken(true);
       if (response.status == 200) {
         const accessToken = response.data.access_token;
         const afterOneDay = new Date();
@@ -71,7 +65,7 @@ export default function Signin() {
           {
             expires: afterOneDay,
           //   secure: true,
-          //   httpOnly: true
+          // httpOnly: true
           }
         );
       }

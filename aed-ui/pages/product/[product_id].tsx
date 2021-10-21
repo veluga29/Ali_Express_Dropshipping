@@ -58,6 +58,11 @@ export async function getServerSideProps({ params, req }) {
         }
       }
     }
+    const headers = {  
+      Authorization: `bearer ${access_token}`
+    }
+
+    // authentication of JWT token
     if (!access_token) {
       return {
         redirect: {
@@ -66,6 +71,21 @@ export async function getServerSideProps({ params, req }) {
         },
       }
     }
+    try{
+      await axios.get('http://localhost:8000/aaa/token', {
+        headers: {
+          Cookie: `access_token=${access_token}`
+        }
+      }); 
+    } catch (error) {
+      return {
+        redirect: {
+          destination: `/signin?retUrl=/product/${params.product_id}`,
+          permanent: false,
+        },
+      }
+    }
+    
     const response = await axios.get(`http://localhost:8000/products/${params.product_id}`, {
       headers: {  
         Authorization: `bearer ${access_token}`

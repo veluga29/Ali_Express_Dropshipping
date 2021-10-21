@@ -12,11 +12,25 @@ import { useCookies } from "react-cookie"
 export default function Signup() {
   const router = useRouter();
   const [ user, setUser ] = useState({});
-  const [ cookies ] = useCookies();
+  const [ cookies, ,removeCookie ] = useCookies();
+  let access_token = cookies.access_token;
+
   useEffect(() => {
-    if (cookies.access_token) {
-      router.push('/products');
+    if (!access_token) {
+      return;
     }
+    const verifyToken = async () => { 
+      try{
+        const response = await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
+        if (response.data.valid) {
+          router.push('/products');
+        }
+      } catch (error) {
+        // Delete access token cookie
+        removeCookie('access_token');
+      }
+    }
+    verifyToken();
   })
 
 

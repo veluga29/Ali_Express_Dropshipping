@@ -21,6 +21,7 @@ def create_app():
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["*"],
     )
 
     # 데이터 베이스 이니셜라이즈
