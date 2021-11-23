@@ -82,20 +82,20 @@ export default function Signin() {
       <Head>
         <title>Signin</title>
       </Head>
-      <div className={styles.signin_container}>
+      <div className="container d-flex justify-content-center align-items-center" style={{height: "500px"}}>
         <main>
-          <form className={styles.login_form} onSubmit={handleSubmit}>
-            <div className={styles.login_form_items}>
+          <form className="row gy-4" style={{width: "400px"}} onSubmit={handleSubmit}>
+            <div>
               <input 
-                className={styles.login_input} 
+                className="form-control form-control-lg"
                 name="email" 
                 type="email" 
                 onChange={handleEmailChange}
                 placeholder="Email" />
             </div>
-            <div className={styles.login_form_items}>
+            <div>
               <input 
-                className={styles.login_input} 
+                className="form-control form-control-lg"
                 name="password" 
                 type="password" 
                 onChange={handlePasswordChange}
@@ -106,19 +106,62 @@ export default function Signin() {
             }}>
               You entered wrong email or password, Please try to enter the right email and password!
             </div>
-            <div className={`${styles.login_form_items} ${styles.login_content}`}>
+            <div className="d-flex justify-content-between">
               <Link href="/signup">
-                <a id={styles.register_button} >
-                  <div>
+                <a>
+                  <div className="btn btn-primary fs-4">
                     Register
                   </div>
                 </a>
               </Link>
-              <button id={styles.login_button} type="submit">Log-in</button>
+              <button className="btn btn-primary fs-4" type="submit">Log-in</button>
             </div>
           </form>
         </main>
       </div>
     </Layout>
+
+    // <Layout>
+    //   <Head>
+    //     <title>Signin</title>
+    //   </Head>
+    //   <div className={styles.signin_container}>
+    //     <main>
+    //       <form className={styles.login_form} onSubmit={handleSubmit}>
+    //         <div className={styles.login_form_items}>
+    //           <input 
+    //             className={styles.login_input} 
+    //             name="email" 
+    //             type="email" 
+    //             onChange={handleEmailChange}
+    //             placeholder="Email" />
+    //         </div>
+    //         <div className={styles.login_form_items}>
+    //           <input 
+    //             className={styles.login_input} 
+    //             name="password" 
+    //             type="password" 
+    //             onChange={handlePasswordChange}
+    //             placeholder="Password" />
+    //         </div>
+    //         <div style={{ 
+    //             display: `${(isInvalid && "block") || "none"}`
+    //         }}>
+    //           You entered wrong email or password, Please try to enter the right email and password!
+    //         </div>
+    //         <div className={`${styles.login_form_items} ${styles.login_content}`}>
+    //           <Link href="/signup">
+    //             <a id={styles.register_button} >
+    //               <div>
+    //                 Register
+    //               </div>
+    //             </a>
+    //           </Link>
+    //           <button id={styles.login_button} type="submit">Log-in</button>
+    //         </div>
+    //       </form>
+    //     </main>
+    //   </div>
+    // </Layout>
   )
 }

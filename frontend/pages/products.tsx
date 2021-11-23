@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Layout from '../src/components/layout'
 import Autocomplete from '../src/components/autocomplete'
+import Pagination from '../src/components/pagination'
 import Image from 'next/image'
 import styles from '/styles/products.module.css'
 
@@ -33,6 +34,7 @@ export default function Products({ productsData }: any) {
 
 
   const [searchText, setSearchText] = useState("");
+  const [totalPages, setTotalPages] = useState(null);
   const [productList, setProductList] = useState(productsData);
   const handleChange = ({ target: { value } }) => setSearchText(value);
   const handleSubmit = async (event) => {
@@ -47,7 +49,8 @@ export default function Products({ productsData }: any) {
         }
       });
       const productsInfo = response.data
-      setProductList(productsInfo.information.items.slice(0, 8))
+      setTotalPages(productsInfo.information.numberOfPages)
+      setProductList(productsInfo.information.items.slice(0, 12))
     } catch (e) {
       console.log(e);
       setProductList(null);
@@ -77,13 +80,19 @@ export default function Products({ productsData }: any) {
       )
     });
     products = (
-      <ul className={styles.product_list}>
-        {productListArray}          
-      </ul>);
+      <div>
+        <ul className={styles.product_list}>
+          {productListArray}          
+        </ul>
+        <Pagination searchText={searchText} totalPages={totalPages} setProductList={setProductList} />
+      </div>
+    );
     
   } else {
     products = (
-      <h2>Please search your products</h2>
+      <div className="d-flex justify-content-center align-items-center" style={{height: "580px"}}>
+        <h2>Please search your products</h2>
+      </div>
     )
   }
 
@@ -92,10 +101,10 @@ export default function Products({ productsData }: any) {
       <Head>
         <title>Products</title>
       </Head>
-      <section className="row">
-        <form className="row gx-5" onSubmit={handleSubmit}>
+      <section className="container-fluid">
+        <form className="offset-2 col-md-4 d-flex" onSubmit={handleSubmit}>
           <input 
-            className={`col-md-3 offset-2`}
+            className="form-control form-control-lg me-2"
             name="search" 
             type="text" 
             value={searchText} 
@@ -104,7 +113,7 @@ export default function Products({ productsData }: any) {
             onChange={handleChange} 
             placeholder="Search items you want" />
           <Autocomplete searchText={searchText} />
-          <button className={`col-md-1 offset-1`} type="submit">Search</button>
+          <button className="btn btn-outline-primary fs-5" type="submit">Search</button>
         </form>
       </section>
       <section className="row">

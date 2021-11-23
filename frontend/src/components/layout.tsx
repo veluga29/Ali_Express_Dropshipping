@@ -4,14 +4,14 @@ import styles from '/styles/layout.module.css'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className=".container">
-      <div className="row">
+    <div>
+      <div className="my-3">
         <Header />
       </div>
-      <div className="row">
+      <div className="my-3">
         {children}
       </div>
-      <div className="row">
+      <div className="my-3">
         <Footer />
       </div>
     </div>

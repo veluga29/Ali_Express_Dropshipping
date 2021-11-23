@@ -43,7 +43,7 @@ add_pagination(app)
 
 @app.get("/")
 async def root():
-    return {"message": "Ali express dropshipping"}
+    return {"message": "Welcome to Ali Express Dropshipping service!"}
 
 
 if __name__ == "__main__":
