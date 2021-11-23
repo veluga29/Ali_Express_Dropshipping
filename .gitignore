@@ -1,5 +1,5 @@
 
-/vscode
+/.vscode
 *.code-workspace
 
 app/.DS_Store
