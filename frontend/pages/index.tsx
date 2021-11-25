@@ -20,7 +20,7 @@ const Home: NextPage = () => {
     }
     const verifyToken = async () => { 
       try{
-        const response = await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
         if (response.data.valid) {
           router.push('/products');
         }

@@ -23,7 +23,7 @@ export default function Signin() {
     const verifyTokenForReturl = async () => { 
       try{
         let retUrl = router.query.retUrl;
-        const response = await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
         if (response.data.valid && retUrl) {
           router.push(retUrl);
         } else if (response.data.valid) {
@@ -49,7 +49,7 @@ export default function Signin() {
     formData.append('username', email);
     formData.append('password', password);
     try {
-      const response = await axios.post('http://localhost:8000/aaa/token',
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`,
       formData, {
         headers: {
           'Content-Type': 'multipart/form-data'

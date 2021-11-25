@@ -22,7 +22,7 @@ export default function Products({ productsData }: any) {
     }
     const verifyToken = async () => { 
       try{
-        await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
+        await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
       } catch (error) {
         // Delete access token cookie
         removeCookie('access_token');
@@ -43,7 +43,7 @@ export default function Products({ productsData }: any) {
     // Store the updated list to state so we can apply on the UI (JSX component)
     event.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:8000/products?text=${searchText}&page=1`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products?text=${searchText}&page=1`, {
         headers: {  
             Authorization: `bearer ${cookies.access_token}`
         }
@@ -149,7 +149,7 @@ export default function Products({ productsData }: any) {
 export async function getStaticProps() {
     let props = {}
     try {      
-      const response = await axios.get('http://localhost:8000/products?text=doggy22&page=1', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products?text=doggy22&page=1`, {
         headers: {  
             Authorization: `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsdWNpYW5Aa2FrYW8uY29tIiwiZXhwIjoxNjMzNjM0NTQzfQ.5GTM9T1MlH7mIiCzFP4wVyyRNCAZBZkF54N5E3Ef1-Q`
         }

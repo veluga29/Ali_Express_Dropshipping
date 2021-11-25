@@ -20,7 +20,7 @@ export default function Pagination({ searchText, totalPages, setProductList }) {
       const headers = {  
         Authorization: `bearer ${access_token}`
       }
-      const response = await axios.get('http://localhost:8000/products/', { params, headers });
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/`, { params, headers });
       setProductList(response.data.information.items.slice(0, 12));
       setCurrentPage(Number(e.target.getAttribute('data-value')));
     } catch (error) {
@@ -38,7 +38,7 @@ export default function Pagination({ searchText, totalPages, setProductList }) {
       const headers = {  
         Authorization: `bearer ${access_token}`
       }      
-      const response = await axios.get('http://localhost:8000/products/', { params, headers });      
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/`, { params, headers });      
       setProductList(response.data.information.items.slice(0, 12));
     } catch (error) {
     }
@@ -53,7 +53,7 @@ export default function Pagination({ searchText, totalPages, setProductList }) {
       const headers = {  
         Authorization: `bearer ${access_token}`
       }
-      const response = await axios.get('http://localhost:8000/products/', { params, headers });
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/`, { params, headers });
       setProductList(response.data.information.items.slice(0, 12));
       setPageQuotient(prevPageQuotient => prevPageQuotient - 1)
       setCurrentPage(prevPage)

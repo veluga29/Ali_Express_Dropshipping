@@ -12,7 +12,7 @@ export default function Autocomplete({ searchText }) {
       const headers = {  
         Authorization: `bearer ${access_token}`
       }
-      const response = await axios.get('http://localhost:8000/products/search', { params, headers});
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/search`, { params, headers});
       setTextData(response.data.items);  // data = response.data.items가 안되는 이유...
     } catch (error) {
     }

@@ -5,14 +5,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
 from app.routers import accounts, authentication, products
+from app.settings import CORS_ORIGIN_FRONTEND
 
 
 def create_app():
     app = FastAPI()
 
     origins = [
-        "http://localhost",
-        "http://localhost:3000",
+        CORS_ORIGIN_FRONTEND,
     ]
 
     app.add_middleware(

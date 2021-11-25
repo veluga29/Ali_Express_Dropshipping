@@ -21,7 +21,7 @@ export default function Signup() {
     }
     const verifyToken = async () => { 
       try{
-        const response = await axios.get('http://localhost:8000/aaa/token', {withCredentials: true}); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
         if (response.data.valid) {
           router.push('/products');
         }
@@ -44,7 +44,7 @@ export default function Signup() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/me', user);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/me`, user);
       if (response.status == 200) {
         router.push('/signin');
       }

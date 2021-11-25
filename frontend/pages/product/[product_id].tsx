@@ -72,7 +72,7 @@ export async function getServerSideProps({ params, req }) {
       }
     }
     try{
-      await axios.get('http://localhost:8000/aaa/token', {
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {
         headers: {
           Cookie: `access_token=${access_token}`
         }
@@ -86,7 +86,7 @@ export async function getServerSideProps({ params, req }) {
       }
     }
     
-    const response = await axios.get(`http://localhost:8000/products/${params.product_id}`, {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/${params.product_id}`, {
       headers: {  
         Authorization: `bearer ${access_token}`
       }
