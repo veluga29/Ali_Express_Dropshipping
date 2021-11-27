@@ -24,14 +24,14 @@ export default function Signin() {
       try{
         let retUrl = router.query.retUrl;
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
-        if (response.data.valid && retUrl) {
+        if (response.data.valid && retUrl && typeof retUrl === 'string') {
           router.push(retUrl);
         } else if (response.data.valid) {
           router.push('/products');
         }
       } catch (error) {
         // Delete access token cookie
-        removeCookie('access_token')
+        removeCookie('access_token');
       }
     }
     verifyTokenForReturl();

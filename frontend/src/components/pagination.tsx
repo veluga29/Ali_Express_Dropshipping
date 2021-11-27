@@ -86,7 +86,7 @@ export default function Pagination({ searchText, totalPages, setProductList }) {
           </a>
         </li>
         {pageIdxsList}
-        <li className={`page-item ${pageQuotient == parseInt(totalPages / 5) + 1 ? "disabled"  : ""}`} key="next" onClick={handleClickNext}>
+        <li className={`page-item ${pageQuotient == Math.ceil(totalPages / 5) ? "disabled"  : ""}`} key="next" onClick={handleClickNext}>
           <a className="page-link" href="#" aria-label="Next">
             <span aria-hidden="true">&raquo;</span>
           </a>

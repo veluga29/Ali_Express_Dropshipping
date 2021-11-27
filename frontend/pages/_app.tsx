@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    import("bootstrap/dist/js/bootstrap");
+    require("bootstrap/dist/js/bootstrap");
   }, []);
 
   return (

@@ -11,7 +11,8 @@ import { useCookies } from "react-cookie"
 import axios from 'axios';
 import router from 'next/router'
 
-export default function Products({ productsData }: any) {
+
+export default function Products({ productsData }) {
   const [cookies, , removeCookie] = useCookies(["access_token"]);
   let access_token = cookies.access_token;
   
@@ -147,7 +148,7 @@ export default function Products({ productsData }: any) {
 }
 
 export async function getStaticProps() {
-    let props = {}
+    let props = { productsData: undefined }
     try {      
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products?text=doggy22&page=1`, {
         headers: {  

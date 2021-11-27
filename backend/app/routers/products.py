@@ -1,8 +1,10 @@
+from typing import List
 from fastapi import APIRouter, Depends, Query
 from fastapi.exceptions import HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from fastapi_pagination import Page
+
+# from fastapi_pagination import Page
 import pytz
 
 from app.crud import crud_product
@@ -59,7 +61,8 @@ async def search_items_by_text(text: str, page: int, db: Session = Depends(get_d
 @router.get(
     "/search",
     dependencies=[Depends(get_current_user)],
-    response_model=Page[pyd_product.SearchTextOutput],
+    # response_model=Page[pyd_product.SearchTextOutput],
+    response_model=List[pyd_product.SearchTextOutput],
 )
 def autocomplete_search_text(
     search: str = Query(..., max_length=50, regex="[A-Za-z0-9]"), db: Session = Depends(get_db)

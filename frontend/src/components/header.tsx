@@ -16,7 +16,9 @@ export default function Header() {
   return (
     <header className="container-fluid mt-5">
       <nav className="navbar navbar-light bg-light px-3">
-        <a className="navbar-brand" href="/">Ali-Express Dropshipping</a>
+        <Link href="/">
+          <a className="navbar-brand">Ali-Express Dropshipping</a>
+        </Link>
         <ul className="nav nav-pills">
           <li className="nav-item">
             <Link href="/products">

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from fastapi_pagination.ext.sqlalchemy import paginate
+
+# from fastapi_pagination.ext.sqlalchemy import paginate
 
 from app.models import model_product
 
@@ -35,10 +36,13 @@ def get_search_text_and_page(db: Session, text: str, page: int):
 
 # autocomplete search text
 def get_search_text_like(db: Session, text: str):
-    return paginate(
+    # return paginate(
+    return (
         db.query(model_product.SearchText)
         .filter(model_product.SearchText.text.like(f"%{text}%"))
         .distinct(model_product.SearchText.text)
+        .all()
+        # .distinct(model_product.SearchText.text)
     )
 
 

@@ -6,6 +6,7 @@ import styles from '/styles/products.module.css'
 
 import axios from 'axios'
 
+
 export default function ProductDetail( { productData } ) {
   let product;
   if (productData) {
@@ -42,7 +43,7 @@ export default function ProductDetail( { productData } ) {
 }
 
 export async function getServerSideProps({ params, req }) {
-  let props = {};
+  let props = { productData: undefined };
   try {
     const cookieString = req ? req.headers.cookie : '';
     let access_token;

@@ -1,6 +1,6 @@
 import os
 
-CORS_ORIGIN_FRONTEND = os.getenv("CORS_ORIGIN_FRONTEND", "")
+CORS_ORIGIN = os.getenv("CORS_ORIGIN", "")
 API_KEY = os.getenv("AED_ZAPIEX_API_KEY", "")
 DB_HOST = os.getenv("AED_DB_HOST", "localhost")
 DB_PORT = os.getenv("AED_DB_PORT", "5432")
