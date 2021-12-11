@@ -55,9 +55,6 @@ export default function Products({ productsData }) {
   const [productList, setProductList] = useState(productsData);
   const handleChange = ({ target: { value } }) => setSearchText(value);
   const handleSubmit = async (event) => {
-    // after submit, we can get final searching text
-    // we call API to get the list of searching text products
-    // Store the updated list to state so we can apply on the UI (JSX component)
     event.preventDefault();
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products?text=${searchText}&page=1`, {
