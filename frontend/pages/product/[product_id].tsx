@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link';
 
 import Layout from '../../src/components/layout'
-import styles from '/styles/products.module.css'
 
 import axios from 'axios'
 
@@ -10,23 +10,129 @@ import axios from 'axios'
 export default function ProductDetail( { productData } ) {
   let product;
   if (productData) {
-    product = (
-      <>
-        <Image
-            src={productData.productImages[0]}
-            height={200}
-            width={200}
+    const carouselIndicatorsArray = productData.productImages.map((productImage, idx) => {
+      return (      
+        <button
+          type="button"
+          key={idx}
+          data-bs-target="#carouselIndicators"
+          className={ idx == 0 ? "active" : "" }
+          data-bs-slide-to={`${idx}`}
+          aria-label={`Slide ${idx + 1}`} />
+      )
+    });
+    const carouselImagesArray = productData.productImages.map((productImage, idx) => {
+      return (      
+        <div className={`carousel-item ${ idx == 0 ? 'active' : ''}`} key={idx}>
+          <Image
+            src={productImage}
+            className="d-block w-100"
+            height={500}
+            width={500}
             alt="Product Image" />
-        <h1>{productData.title}</h1>
-        <p>
-          {/* {productData.price.web.display || 0} <br /> */}
-          {/* {productData.reviewsRatings.averageRating || 0} */}
-        </p>
-      </>
+        </div>
+      )
+    });
+    const carousel = (
+      <div id="carouselIndicators" className="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div className="carousel-indicators">
+          {carouselIndicatorsArray}
+        </div>
+        <div className="carousel-inner" >
+          {carouselImagesArray}
+        </div>
+        <button
+          className="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselIndicators"
+          data-bs-slide="prev" 
+        >
+          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span className="visually-hidden">Previous</span>
+        </button>
+        <button
+          className="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselIndicators"
+          data-bs-slide="next"
+        >
+          <span className="carousel-control-next-icon" aria-hidden="true"></span>
+          <span className="visually-hidden">Next</span>
+        </button>
+      </div>
+    )
+    const reviewStar = []
+    const limit = Math.floor(productData.reviewsRatings.averageRating)
+    for (let i = 0; i < 5; i++) {
+      const starImage = i < limit ? (
+        <Image 
+          src="/images/review_red_star.png"
+          key={i}
+          width={22}
+          height={18}
+          alt="Star"
+        />
+      ) : (
+        <Image 
+          src="/images/review_empty_star.png"
+          key={i}
+          width={22}
+          height={18}
+          alt="Star"
+        />
+      )
+      reviewStar.push(starImage)
+    }
+
+    product = (
+      <div className="container-fluid d-flex justify-content-center">
+        <div className="col-4">
+          {carousel}
+        </div>
+        <div className="offset-1 col-6">
+          <div>
+            <h3>{productData.title}</h3>
+            <p>
+              {reviewStar}
+              &nbsp;
+              {productData.reviewsRatings.averageRating}
+              &nbsp;&nbsp;&nbsp;
+              {productData.reviewsRatings.totalCount} Review
+              &nbsp;
+              {productData.totalOrders} Order
+            </p>
+          </div>
+          <div>
+            <h3>
+              {productData.currency}
+              &nbsp;
+              {productData.priceSummary.web.originalPrice.min.display||productData.price.web.originalPrice.min.display||'Please go to Ali-Express to check the price'}
+            </h3>
+          </div>
+          <br/>
+          <div>
+            <h5>Total stock: {productData.totalStock} ({productData.unitNamePlural})</h5>
+            <h5>Wishlist count: {productData.wishlistCount}</h5>
+            <h5>Shipping from: {productData.shipping.shipFrom}</h5>
+            <h5>Shipping to: {productData.shipping.shipFrom}</h5>
+          </div>
+          <div>            
+            <a 
+              className="btn btn-danger alert-danger"
+              href={productData.productUrl}
+              target="_blank"
+              rel="noreferrer">
+                Go to Ali-Express item page
+            </a>            
+          </div>
+        </div>
+      </div>
     )
   } else {
     product = (
+      <div className="d-flex justify-content-center align-items-center" style={{height: "580px"}}>
         <h2>Sorry, the product is not available at this moment</h2>
+      </div>
     )
   }
 
@@ -59,9 +165,6 @@ export async function getServerSideProps({ params, req }) {
         }
       }
     }
-    const headers = {  
-      Authorization: `bearer ${access_token}`
-    }
 
     // authentication of JWT token
     if (!access_token) {
@@ -75,7 +178,7 @@ export async function getServerSideProps({ params, req }) {
     try{
       await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {
         headers: {
-          Cookie: `access_token=${access_token}`
+            Authorization: `bearer ${access_token}`
         }
       }); 
     } catch (error) {

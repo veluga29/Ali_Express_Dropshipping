@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Layout from '../src/components/layout'
-import styles from '/styles/signin.module.css'
 
 import { useState } from "react";
 import { useEffect } from 'react'
@@ -23,7 +22,11 @@ export default function Signin() {
     const verifyTokenForReturl = async () => { 
       try{
         let retUrl = router.query.retUrl;
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {
+          headers: {
+              Authorization: `bearer ${access_token}`
+          }
+        }); 
         if (response.data.valid && retUrl && typeof retUrl === 'string') {
           router.push(retUrl);
         } else if (response.data.valid) {
@@ -64,8 +67,6 @@ export default function Signin() {
           accessToken,
           {
             expires: afterOneDay,
-          //   secure: true,
-          // httpOnly: true
           }
         );
       }
@@ -109,59 +110,16 @@ export default function Signin() {
             <div className="d-flex justify-content-between">
               <Link href="/signup">
                 <a>
-                  <div className="btn btn-primary fs-4">
+                  <div className="btn btn-danger fs-4">
                     Register
                   </div>
                 </a>
               </Link>
-              <button className="btn btn-primary fs-4" type="submit">Log-in</button>
+              <button className="btn btn-danger fs-4" type="submit">Log-in</button>
             </div>
           </form>
         </main>
       </div>
     </Layout>
-
-    // <Layout>
-    //   <Head>
-    //     <title>Signin</title>
-    //   </Head>
-    //   <div className={styles.signin_container}>
-    //     <main>
-    //       <form className={styles.login_form} onSubmit={handleSubmit}>
-    //         <div className={styles.login_form_items}>
-    //           <input 
-    //             className={styles.login_input} 
-    //             name="email" 
-    //             type="email" 
-    //             onChange={handleEmailChange}
-    //             placeholder="Email" />
-    //         </div>
-    //         <div className={styles.login_form_items}>
-    //           <input 
-    //             className={styles.login_input} 
-    //             name="password" 
-    //             type="password" 
-    //             onChange={handlePasswordChange}
-    //             placeholder="Password" />
-    //         </div>
-    //         <div style={{ 
-    //             display: `${(isInvalid && "block") || "none"}`
-    //         }}>
-    //           You entered wrong email or password, Please try to enter the right email and password!
-    //         </div>
-    //         <div className={`${styles.login_form_items} ${styles.login_content}`}>
-    //           <Link href="/signup">
-    //             <a id={styles.register_button} >
-    //               <div>
-    //                 Register
-    //               </div>
-    //             </a>
-    //           </Link>
-    //           <button id={styles.login_button} type="submit">Log-in</button>
-    //         </div>
-    //       </form>
-    //     </main>
-    //   </div>
-    // </Layout>
   )
 }

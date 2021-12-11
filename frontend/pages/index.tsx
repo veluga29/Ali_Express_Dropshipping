@@ -1,12 +1,11 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
-import styles from '../styles/Home.module.css'
 
 import axios from 'axios'
 import { useEffect } from 'react'
 import { useCookies } from "react-cookie"
+
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -20,7 +19,11 @@ const Home: NextPage = () => {
     }
     const verifyToken = async () => { 
       try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {
+          headers: {
+              Authorization: `bearer ${access_token}`
+          }
+        }); 
         if (response.data.valid) {
           router.push('/products');
         }
@@ -34,11 +37,13 @@ const Home: NextPage = () => {
   });
 
   return (
-    <div className={styles.container}>
+    <div className="d-flex justify-content-center align-items-center" style={{height: 850}}>
       <Head>
         <title>Index</title>
       </Head>
-      <h1>Loading...</h1>
+      <div className="spinner-border text-warning" role="status" style={{width: '8rem', height: '8rem'}}>
+        <span className="visually-hidden">Loading...</span>
+      </div>
     </div>
   )
 }

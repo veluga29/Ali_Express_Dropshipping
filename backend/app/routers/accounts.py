@@ -12,7 +12,7 @@ router = APIRouter(prefix="/me", tags=["me"])
 
 
 @router.post("/", response_model=pyd_user.User)
-async def create_me(user: pyd_user.UserCreate, db: Session = Depends(get_db)):
+def create_me(user: pyd_user.UserCreate, db: Session = Depends(get_db)):
     db_user = crud_user.get_user_by_email(db, email=user.email)
     if db_user:
         raise HTTPException(
@@ -22,12 +22,12 @@ async def create_me(user: pyd_user.UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=pyd_user.User)
-async def read_me(current_user: model_user.User = Depends(get_current_user)):
+def read_me(current_user: model_user.User = Depends(get_current_user)):
     return current_user
 
 
-@router.put("/", response_model=pyd_user.User)
-async def update_me(
+@router.patch("/", response_model=pyd_user.User)
+def update_me(
     update_data: pyd_user.UserUpdate,
     current_user: model_user.User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -36,13 +36,7 @@ async def update_me(
 
 
 @router.delete("/", response_model=pyd_user.User)
-async def delete_me(
+def delete_me(
     current_user: model_user.User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     return crud_user.delete_user(db, db_user=current_user)
-
-
-# super user 전용 apis
-# @router.get("/", response_model=List[pyd_user.User])
-# async def get_users_info(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-#     return crud_user.get_users(db, skip=skip, limit=limit)

@@ -7,14 +7,6 @@ class SearchText(BaseModel):
     text: str
 
 
-class SearchTextInput(SearchText):
-    id: int
-    page: int
-
-    class Config:
-        orm_mode = True
-
-
 class SearchTextOutput(SearchText):
     class Config:
         orm_mode = True

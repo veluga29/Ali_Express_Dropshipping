@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Layout from '../src/components/layout'
-import styles from '/styles/signin.module.css'
 
 import { useState } from "react";
 import { useEffect } from 'react'
@@ -21,7 +20,11 @@ export default function Signup() {
     }
     const verifyToken = async () => { 
       try{
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {withCredentials: true}); 
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aaa/token`, {
+          headers: {
+              Authorization: `bearer ${cookies.access_token}`
+          }
+        }); 
         if (response.data.valid) {
           router.push('/products');
         }
@@ -58,43 +61,50 @@ export default function Signup() {
       <Head>
         <title>Signup</title>
       </Head>
-      <div className={styles.signin_container}>
+      <div className="container d-flex justify-content-center align-items-center" style={{height: "500px"}}>
         <main>
-          <form className={styles.login_form} onSubmit={handleSubmit}>
-            <div className={styles.login_form_items}>
+          <form className="row gy-4" style={{width: "400px"}} onSubmit={handleSubmit}>
+            <div>
               <input 
-                className={styles.login_input} 
+                className="form-control form-control-lg"
                 name="email" 
                 type="email" 
                 onChange={handleChange}
                 placeholder="Email" />
             </div>
-            <div className={styles.login_form_items}>
+            <div>
               <input 
-                className={styles.login_input} 
+                className="form-control form-control-lg"
                 name="password" 
                 type="password" 
                 onChange={handleChange}
                 placeholder="Password" />
             </div>
-            <div className={styles.login_form_items}>
+            <div>
               <input 
-                className={styles.login_input} 
+                className="form-control form-control-lg"
                 name="last_name" 
                 type="text" 
                 onChange={handleChange}
                 placeholder="Last name" />
             </div>
-            <div className={styles.login_form_items}>
+            <div>
               <input 
-                className={styles.login_input} 
+                className="form-control form-control-lg"
                 name="first_name" 
                 type="text" 
                 onChange={handleChange}
                 placeholder="First name" />
             </div>
-            <div className={`${styles.login_form_items} ${styles.login_content}`}>
-              <button id={styles.login_button} type="submit">Sign-up</button>
+            <div className="d-flex justify-content-between">
+              <Link href="/signin">
+                <a>
+                  <div className="btn btn-danger fs-4">
+                    Sign-in
+                  </div>
+                </a>
+              </Link>
+              <button className="btn btn-danger fs-4" type="submit">Sign-up</button>
             </div>
           </form>
         </main>

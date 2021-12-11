@@ -69,9 +69,11 @@ export default function Pagination({ searchText, totalPages, setProductList }) {
   }
   const pageIdxsList = pageIdxs.map((pageIdx) => {
     return (
-      <li className={`page-item ${pageIdx % 5 == currentPage % 5 ? "active"  : ""}`} onClick={handleClickPage} key={pageIdx}>
-        <a className="page-link" href="#" data-value={ skip + pageIdx }>
-          { skip + pageIdx }
+      <li className="page-item" onClick={handleClickPage} key={pageIdx}>
+        <a className={`page-link ${pageIdx % 5 == currentPage % 5 ? "bg-warning text-white"  : "text-secondary"}`} href="#" data-value={ skip + pageIdx }>
+          <div>
+            { skip + pageIdx }
+          </div>
         </a>
       </li>
     )
@@ -82,13 +84,13 @@ export default function Pagination({ searchText, totalPages, setProductList }) {
       <ul className="pagination pagination-lg justify-content-center">
         <li className={`page-item ${pageQuotient == 1 ? "disabled"  : ""}`} key="previous" onClick={handleClickPrevious}>
           <a className="page-link" href="#" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
+            <span className={`${pageQuotient == 1 ? ""  : "text-warning"}`} aria-hidden="true">&laquo;</span>
           </a>
         </li>
         {pageIdxsList}
         <li className={`page-item ${pageQuotient == Math.ceil(totalPages / 5) ? "disabled"  : ""}`} key="next" onClick={handleClickNext}>
           <a className="page-link" href="#" aria-label="Next">
-            <span aria-hidden="true">&raquo;</span>
+            <span className={`${pageQuotient == Math.ceil(totalPages / 5) ? ""  : "text-warning"}`} aria-hidden="true">&raquo;</span>
           </a>
         </li>
       </ul>

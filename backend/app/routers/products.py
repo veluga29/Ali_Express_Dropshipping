@@ -17,19 +17,8 @@ router = APIRouter(prefix="/products", tags=["products"])
 utc = pytz.UTC
 
 
-"""
-{
-    cur: "http://localhost:8000/products?text=cat&pg=1&count=20"
-    next: "http://localhost:8000/products?text=cat&pg=2&count=15"
-    data: [{
-        
-    }]
-}
-"""
-
-
 @router.get("/", dependencies=[Depends(get_current_user)], response_model=pyd_product.ProductList)
-async def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
+def search_items_by_text(text: str, page: int, db: Session = Depends(get_db)):
     try:
         search_text = crud_product.get_search_text_and_page(db, text=text, page=page)
         if search_text:
@@ -89,7 +78,6 @@ def create_details(product_id: str, db: Session = Depends(get_db)):
             product_info = zapiex_apis.get_product(product_id)
             status_code = product_info["statusCode"]
             information = product_info["data"]
-            # active 이외의 status에 대해 return 하지 않아도 될까요?
             if status_code == 200 and information["status"] != "active":
                 return
             if status_code == 200:
@@ -103,14 +91,13 @@ def create_details(product_id: str, db: Session = Depends(get_db)):
         product_info = zapiex_apis.get_product(product_id)
         status_code = product_info["statusCode"]
         information = product_info["data"]
-        # active 이외의 status에 대해 else로 return 하지 않아도 될까요?
         if status_code == 200 and information["status"] != "active":
             return
         if status_code == 200:
             return crud_product.create_product_details(db=db, information=information)
         elif status_code == 201:
             # ex) '1230192314802471024333333333332433256164', 'asdf5625435', ';;;;'
-            return  # 이렇게 케이스를 나눈 상황에서 null 값 리턴해도 상관없을지 고민됩니다. (schema로 인해 리턴값이 제한됨)
+            return
         else:
             # ex) '강아지'
             raise HTTPException(status_code=status_code, detail=product_info["errorMessage"])

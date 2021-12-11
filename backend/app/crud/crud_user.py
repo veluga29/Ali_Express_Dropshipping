@@ -38,8 +38,3 @@ def delete_user(db: Session, db_user: model_user.User):
     db.delete(db_user)
     db.commit()
     return db_user
-
-
-# for super user
-# def get_users(db: Session, skip: int, limit: int):
-#     return db.query(User).offset(skip).limit(limit).all()

@@ -1,4 +1,3 @@
-import uvicorn
 from fastapi import FastAPI
 
 # from fastapi_pagination import add_pagination
@@ -16,7 +15,6 @@ origins = eval(CORS_ORIGIN)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],

@@ -31,7 +31,7 @@ export default function Autocomplete({ searchText }) {
           return (
             <option key={text} value={text} />
           )
-      })
+        })
       }
     </datalist> 
   )

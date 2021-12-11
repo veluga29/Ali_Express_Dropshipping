@@ -1,14 +1,11 @@
-from fastapi import APIRouter, Depends, status, Cookie, Response
+from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from typing import Optional
-from jose import jwt
 from sqlalchemy.orm import Session
-from pydantic import ValidationError
 
 from app.core.security import authenticate_user, create_access_token, TOKEN_ALGORITHM
 from app.schemas import pyd_token
-from app.dependencies import get_db
+from app.dependencies import get_current_user, get_db
 from app.settings import TOKEN_SECRET_KEY
 
 from datetime import timedelta
@@ -21,8 +18,7 @@ router = APIRouter(prefix="/aaa", tags=["aaa"])
 
 
 @router.post("/token", response_model=pyd_token.Token)
-async def login_for_access_token(
-    response: Response,
+def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
@@ -40,19 +36,13 @@ async def login_for_access_token(
         token_algorithm=TOKEN_ALGORITHM,
         expires_delta=access_token_expires,
     )
-    response.set_cookie(
-        key="access_token", value=f"{access_token}", expires=60 * 60 * 24, httponly=True
-    )
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/token")
-async def verify_access_token(access_token: Optional[str] = Cookie(None)):
+@router.get("/token", dependencies=[Depends(get_current_user)])
+def verify_access_token():
     try:
-        jwt.decode(access_token, TOKEN_SECRET_KEY, algorithms=[TOKEN_ALGORITHM])
         return {"valid": True}
-    except (jwt.JWTError, ValidationError):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-        )
+    except Exception:
+        raise
