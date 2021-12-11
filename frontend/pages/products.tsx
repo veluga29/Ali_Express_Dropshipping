@@ -89,11 +89,12 @@ export default function Products({ productsData }) {
               </a>
             </Link>
             <div className="card-body d-flex flex-column justify-content-between">
-              <h5 className="card-title">{product.title}</h5>
+              <h5 className="card-title" style={{height: 140}}>{product.title}</h5>
               <div>
                 <p className="card-text">
                   Total Orders: {product.totalOrders || 0}<br/>
-                  Average Rating: {product.averageRating || 0}
+                  Average Rating: {product.averageRating || 0}<br/>
+                  Minimum Shipping Price: {product.shippingMinPrice.value || 0} 
                 </p>
                 <Link href={`/product/${product.productId}`}>
                   <a className="btn btn-warning alert-warning">See item detail</a>

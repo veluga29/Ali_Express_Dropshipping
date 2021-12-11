@@ -13,7 +13,7 @@ export default function Autocomplete({ searchText }) {
         Authorization: `bearer ${access_token}`
       }
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/products/search`, { params, headers});
-      setTextData(response.data.items);  // data = response.data.items가 안되는 이유...
+      setTextData(response.data);
     } catch (error) {
     }
   };

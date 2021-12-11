@@ -68,8 +68,8 @@ export default function ProductDetail( { productData } ) {
         <Image 
           src="/images/review_red_star.png"
           key={i}
-          width={22}
-          height={18}
+          width={23}
+          height={17}
           alt="Star"
         />
       ) : (
@@ -85,7 +85,7 @@ export default function ProductDetail( { productData } ) {
     }
 
     product = (
-      <div className="container-fluid d-flex justify-content-center">
+      <div className="container-fluid d-flex justify-content-center my-5">
         <div className="col-4">
           {carousel}
         </div>
@@ -102,20 +102,29 @@ export default function ProductDetail( { productData } ) {
               {productData.totalOrders} Order
             </p>
           </div>
+          <br/>
           <div>
-            <h3>
-              {productData.currency}
+            <h4>
+              Max discounted price(Web): {productData.currency}
               &nbsp;
-              {productData.priceSummary.web.originalPrice.min.display||productData.price.web.originalPrice.min.display||'Please go to Ali-Express to check the price'}
-            </h3>
+              {productData.priceSummary.web.discountedPrice.min.display||productData.price.web.discountedPrice.min.display||'Please go to Ali-Express to check the price'}
+            </h4>
+            <h4>
+              Max discounted price(App): {productData.currency}
+              &nbsp;
+              {productData.priceSummary.app.discountedPrice.min.display||productData.price.app.discountedPrice.min.display||'Please go to Ali-Express to check the price'}
+            </h4>
           </div>
           <br/>
           <div>
             <h5>Total stock: {productData.totalStock} ({productData.unitNamePlural})</h5>
             <h5>Wishlist count: {productData.wishlistCount}</h5>
             <h5>Shipping from: {productData.shipping.shipFrom}</h5>
-            <h5>Shipping to: {productData.shipping.shipFrom}</h5>
+            <h5>Shipping to: {productData.shipTo}</h5>
+            <h5>Delivery processing time: {productData.processingTimeInDays} (Days)</h5>
+            <h5>Company: {productData.seller.storeName}</h5>
           </div>
+          <br/>
           <div>            
             <a 
               className="btn btn-danger alert-danger"
