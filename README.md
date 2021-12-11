@@ -45,6 +45,16 @@ Ali Express에서 제공하는 상품 정보를 Zapiex API를 통해 가져와 D
 
 ## :bookmark: ERD
 
+* `search_texts`
+
+  * 같은 검색어도 페이지가 다르면 구별하여 저장합니다. (Zapiex API 호출 시 검색어와 페이지 인자를 동시에 요구하므로)
+
+    Ex. ('welsh corgi', 1 page) != ('welsh corgi', 5 page)
+
+* `product_lists`
+  * `search_text_id`를 Foreign key로 사용하여, `search_texts` 테이블과 1-to-1 realationship을 구축합니다.
+* 모든 table은 3NF 정규화를 충족합니다.
+
 ![AED ERD](AED_ERD.png)
 
 ​    
@@ -142,26 +152,6 @@ JWT Athentication 및 Authorization API 구현
 * `get_db` :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/3157387e66446b25b7e288149395ef3fc69ef8e3/backend/app/dependencies.py#L18)
   * DB session을 열어 DB 작업이 필요한 API에 잠시 넘겨주고, 작업이 끝나면 다시 session을 돌려받아 닫습니다.
 
-
-​    
-
-### :paperclip: DB
-
-* DB table 구성 (모든 테이블은 3NF 정규화 충족) :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/tree/master/backend/app/models)
-  * `search_texts`
-
-    * Zapiex API를 호출할 때 검색어와 페이지를 동시에 받으므로, 같은 검색어 문자열도 페이지가 다르면 구별하여 저장
-
-      Ex. ('welsh corgi', 1 page) != ('welsh corgi', 5 page)
-
-  * `product_lists`
-
-    * `search_text_id`를 Foreign key로 사용하여, `search_texts` 테이블과 1-to-1 realationship 구축
-
-  * `product_details`
-
-  * `users`
-
 ​    
 
 ### :paperclip: ETC
@@ -174,28 +164,28 @@ JWT Athentication 및 Authorization API 구현
 
 ## :bookmark: Trouble shooting - Backend
 
-* 특정 상황을 Alembic autogeneration이 잘 감지하지 못하는 문제
+* 특정 상황을 Alembic autogeneration이 잘 감지하지 못하는 문제 :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/3157387e66446b25b7e288149395ef3fc69ef8e3/backend/alembic/env.py#L54)
   * Column의 타입 변화 같은 alter 관련 테이블 변화가 autogeneration 시 잘 반영되지 않았습니다.
-  * `run_migrations_offline` 및 `run_migrations_online`에 `compare_type=True`를 설정해서 해결 :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/3157387e66446b25b7e288149395ef3fc69ef8e3/backend/alembic/env.py#L54)
+  * `run_migrations_offline` 및 `run_migrations_online`에 `compare_type=True`를 설정해서 해결 
 
-* Zapiex API 호출 시 상품 정보 리스트의 갯수가 균일하게 오지 않는 현상 
+* Zapiex API 호출 시 상품 정보 리스트의 갯수가 균일하게 오지 않는 현상 :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/06385b224bf2af0b28161494a96138eea0505ed5/frontend/pages/products.tsx#L67)
   * 20개의 상품에 대한 정보 리스트가  와야하는데, 약 15~18개가 무작위로 오는 현상이 발생했습니다.
   * API document에서 AliExpress-promoted products는 규격이 맞지 않아 제외하고 보내진다는 점을 확인했습니다.
-  * 프론트 측에서 몇몇 아이템이 제외되더라도 안전하게 12개씩 pagination하는 방식으로 해결했습니다. :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/06385b224bf2af0b28161494a96138eea0505ed5/frontend/pages/products.tsx#L67)
+  * 프론트 측에서 몇몇 아이템이 제외되더라도 안전하게 12개씩 pagination하는 방식으로 해결했습니다. 
 
-* Product detail 관련 Zapiex API를 호출할 시 input으로 사용되는 id의 종류에 따라 다른 상태코드 응답
-  * 비정상적인 input이 될 수 있는 경우를 시도해보면서 경우의 수를 나누며 해결했습니다. :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/3157387e66446b25b7e288149395ef3fc69ef8e3/backend/app/routers/products.py#L94)
+* Product detail 관련 Zapiex API를 호출할 시 input으로 사용되는 id의 종류에 따라 다른 상태코드 응답 :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/3157387e66446b25b7e288149395ef3fc69ef8e3/backend/app/routers/products.py#L94)
+  * 비정상적인 input이 될 수 있는 경우를 시도해보면서 경우의 수를 나누며 해결했습니다. 
 
-* `datetime` 객체 비교 에러 (`search_items_by_text`, `create_details` API)
+* `datetime` 객체 비교 에러 (`search_items_by_text`, `create_details` API) :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/06385b224bf2af0b28161494a96138eea0505ed5/backend/app/routers/products.py#L27)
   * update date를 비교할 때, `TypeError: can't compare offset-naive and offset-aware datetimes` 발생했습니다.
   * 시간대가 포함된 aware 타입 datetime 객체(DB의 date)와 그렇지 않은 naive 타입 datetime 객체(새로 만든 date) 간 비교로 인한 문제였습니다.
-  * `pytz` 라이브러리를 사용해 naive 타입 객체를 aware 타입으로 바꿔서 해결했습니다. :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/06385b224bf2af0b28161494a96138eea0505ed5/backend/app/routers/products.py#L27)
+  * `pytz` 라이브러리를 사용해 naive 타입 객체를 aware 타입으로 바꿔서 해결했습니다. 
 
-* `fastapi_pagination` 외부 라이브러리 적용 시 서버 배포 에러
+* `fastapi_pagination` 외부 라이브러리 적용 시 서버 배포 에러 :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/06385b224bf2af0b28161494a96138eea0505ed5/backend/app/crud/crud_product.py#L39)
   * 원래 검색어 자동 완성 API에는 `fastapi_pagination` 라이브러리를 적용해 pagination을 구현했습니다.
   * 다만, Heroku 서버 배포 시 `TypeError: typing.ClassVar...`가 발생했습니다.
   * `fastapi_pagination`을 적용할 때 FastApi app 인스턴스를 감싸 nested 되는 부분이 존재하는데, 라이브러리의 기본 사용법에 해당하는 부분이라 라이브러리에 문제가 있다고 판단했습니다.
-  * 라이브러리 적용을 해제하는 방향으로 해결했습니다. :pushpin: [코드 확인](https://github.com/veluminous/Ali_Express_Dropshipping/blob/06385b224bf2af0b28161494a96138eea0505ed5/backend/app/crud/crud_product.py#L39)
+  * 라이브러리 적용을 해제하는 방향으로 해결했습니다. 
 
 
 ​    
